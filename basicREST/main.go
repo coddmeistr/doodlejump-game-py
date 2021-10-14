@@ -12,7 +12,7 @@ var router *gin.Engine
 
 var collEmployees *mongo.Collection
 var collDepartments *mongo.Collection
-//var ctx = context.TODO()
+var ctx = context.TODO()
 
 
 func main(){
