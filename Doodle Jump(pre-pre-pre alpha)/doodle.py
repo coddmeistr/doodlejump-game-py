@@ -11,7 +11,7 @@ from text_object import TextObject
 from button import Button
 from statistic import Statistic
 
-# commited lol
+
 class Doodle(Game):
     def __init__(self):
         Game.__init__(self, 'Doodle Jump', c.win_width, c.win_height, "images/background.jpg", c.framerate)
