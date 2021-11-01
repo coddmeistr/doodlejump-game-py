@@ -3,8 +3,8 @@ import random
 
 
 # Game's window settings
-win_width = 1920  # 800
-win_height = 1080  # 600
+win_width = 800  # 800
+win_height = 600  # 600
 framerate = 60
 
 

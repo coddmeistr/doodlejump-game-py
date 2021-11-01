@@ -2,6 +2,7 @@ import pygame
 import weakref
 import colors
 
+from states_handlers import *
 from delete import *
 import config as c
 from game import Game
@@ -28,7 +29,7 @@ class Doodle(Game):
 
         # Game states
         self.game_over = False
-        self.game_state = 'Menu'
+        self.game_state = 'Menu_main'
         self.create_menu()
 
         # Game statistic
@@ -41,6 +42,16 @@ class Doodle(Game):
         main_menu_buttons.append(Button(c.win_width / 2 - 160 / 2, 150, 160, 60, "ИГРАТЬ", paddingX=16, paddingY=6))
         main_menu_buttons.append(Button(c.win_width / 2 - 235 / 2, 250, 235, 60, "НАСТРОЙКИ", paddingX=16, paddingY=6))
         main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 350, 155, 60, "ВЫХОД", paddingX=16, paddingY=6))
+        for button in main_menu_buttons:
+            self.mouse_handlers.append(button.handle_mouse_event)
+            self.objects.append(button)
+            self.buttons.append(button)
+
+    def create_menu_settings(self):
+        main_menu_buttons = list()
+        main_menu_buttons.append(Button(c.win_width / 2 - 160 / 2, 150, 160, 60, "ЗВУК", paddingX=16, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 235 / 2, 250, 235, 60, "СЛОЖНОСТЬ", paddingX=16, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 350, 155, 60, "НАЗАД", paddingX=16, paddingY=6))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -177,7 +188,7 @@ class Doodle(Game):
         if time_elapsed >= c.after_lost_pause:
             self.delete_objects()
             self.create_menu()
-            self.game_state = "Menu"
+            self.game_state = "Menu_main"
             self.game_lost_time = -1
 
     def camera_chasing(self):
@@ -226,52 +237,18 @@ class Doodle(Game):
     def update(self):
         self.time += 1 / c.framerate
 
-        # Start playing
-        if self.game_state == "Menu":
-            if self.buttons[0].state == "pressed":
-                self.delete_objects()
-                self.last_platform_height = 0
-
-                self.create_jumper()
-                self.create_plato()
-                self.first_platforms_layer()
-                self.create_stats_trackers()
-
-                self.game_over = False
-                self.game_state = "Play"
-                return
-
-            # Settings
-            if self.buttons[1].state == "pressed":
-                pass
-
-            # Exit
-            if self.buttons[2].state == "pressed":
-                pygame.event.post(pygame.event.Event(pygame.QUIT))
-                return
+        # STATES HANDLERS HERE
+        # STATES HANDLERS HERE
+        if self.game_state == "Menu_main":
+            main_menu_handler(self)
 
         if self.game_state == "Play":
-            if self.jumper.game_over:
-                self.jumper.game_over = False
-                # action
-                self.game_lost()
-                self.game_lost_time = self.time + 0
-                self.game_over = True
+            playing_game_handler(self)
 
-            if not self.game_over:
-                plat_was_jumped = 0
-                plat = self.jumper.collision_check(self.platforms)
-                if plat is not None:
-                    plat.color = colors.RED1
-                    plat_was_jumped = 1
-                height_dif = self.camera_chasing()
-
-                self.update_points(height_dif, plat_was_jumped)
-
-                if self.tracking_platform.top >= 0:
-                    self.another_platforms()
-            else:
-                self.game_lost_pause()
+        if self.game_state == "Menu_settings":
+            menu_settings_handler(self)
+        # STATES HANDLERS HERE(UP)
+        # STATES HANDLERS HERE(UP)
 
         # other objects manipulations
         self.multicolor.update()
