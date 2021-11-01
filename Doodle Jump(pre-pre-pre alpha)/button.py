@@ -1,8 +1,7 @@
-import pygame
+from MODULES import *
 
 from game_object import GameObject
 from text_object import TextObject
-import config as c
 
 
 class Button(GameObject):

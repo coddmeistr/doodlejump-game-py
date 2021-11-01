@@ -1,7 +1,7 @@
-import pygame
-import colors
+from MODULES import *
 
 
+# game_state == Menu_main
 def main_menu_handler(self):
     if self.buttons[0].state == "pressed":
         self.delete_objects()
@@ -30,6 +30,7 @@ def main_menu_handler(self):
         return
 
 
+# game_state == Play
 def playing_game_handler(self):
     if self.jumper.game_over:
         self.jumper.game_over = False
@@ -54,6 +55,7 @@ def playing_game_handler(self):
         self.game_lost_pause()
 
 
+# game_state == Menu_settings
 def menu_settings_handler(self):
     # Sound
     if self.buttons[0].state == "pressed":

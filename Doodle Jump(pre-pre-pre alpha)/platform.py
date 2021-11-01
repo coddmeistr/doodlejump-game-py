@@ -1,8 +1,5 @@
-import pygame
-import random
-import colors
+from MODULES import *
 
-import config as c
 from game_object import GameObject
 
 
@@ -78,4 +75,5 @@ def random_platform(x, y, w, h, chances_list):
     if res == 0:
         return Platform(x, y, w, h, colors.BLUE)
     elif res == 1:
-        return MovingPlatform(x, y, w, h, colors.GREEN, 6)
+        speed = 6
+        return MovingPlatform(x, y, w, h, colors.GREEN, speed)

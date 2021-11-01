@@ -1,4 +1,4 @@
-import pygame
+from MODULES import *
 
 
 class TextObject:

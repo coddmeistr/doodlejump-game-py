@@ -1,14 +1,4 @@
-import pygame
-import random
-
-import colors
-import config as c
-from game import Game
-from jumper import Jumper
-from platform import Platform, MovingPlatform, random_platform
-from text_object import TextObject
-from button import Button
-from statistic import Statistic
+from MODULES import *
 
 
 # delete list of trackers

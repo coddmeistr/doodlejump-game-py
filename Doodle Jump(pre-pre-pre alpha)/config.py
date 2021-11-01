@@ -1,5 +1,4 @@
-import colors
-import random
+from MODULES import *
 
 
 # Game's window settings

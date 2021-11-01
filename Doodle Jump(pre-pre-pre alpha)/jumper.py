@@ -1,6 +1,5 @@
-import pygame
+from MODULES import *
 
-import config as c
 from game_object import GameObject
 
 
@@ -119,7 +118,7 @@ class Jumper(GameObject):
         self.horizontal_move()
 
     def draw(self, surface):
-        #pygame.draw.rect(surface, self.color, self.bounds)
+        # pygame.draw.rect(surface, self.color, self.bounds) # not necessary
         surface.blit(self.texture, self.bounds)
 
     def __del__(self):

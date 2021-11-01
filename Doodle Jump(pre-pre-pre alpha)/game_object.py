@@ -1,7 +1,6 @@
-from pygame.rect import Rect
+from MODULES import *
 
 globals()["ID"] = 0
-globals()["COUNT"] = 0
 
 
 class GameObject:
@@ -9,9 +8,8 @@ class GameObject:
         self.ID = globals().get("ID")
         print("ID: ", self.ID)
         globals()["ID"] += 1
-        globals()["COUNT"] += 1
 
-        self.bounds = Rect(x, y, w, h)
+        self.bounds = pygame.Rect(x, y, w, h)
         self.speed = speed
 
     @property
@@ -51,7 +49,7 @@ class GameObject:
         return self.bounds.centery
 
     def rectangle(self):
-        return Rect(self.bounds.left, self.bounds.top, self.width, self.height)
+        return pygame.Rect(self.bounds.left, self.bounds.top, self.width, self.height)
 
     def draw(self, surface):
         pass

@@ -1,5 +1,5 @@
-import pygame
-import sys
+from MODULES import *
+
 import multicoloring
 
 from collections import defaultdict
@@ -20,7 +20,7 @@ class Game:
         self.objects_to_remove = []  # garbage collector with delayed remove
         self.platforms = []
         self.buttons = []
-        #pygame.mixer.pre_init(44100, 16, 2, 4096)
+        # pygame.mixer.pre_init(44100, 16, 2, 4096) # not necessary now
         pygame.init()
         pygame.font.init()
         self.surface = pygame.display.set_mode((width, height))
@@ -47,7 +47,7 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #print(self.errors_log)
+                # print(self.errors_log) # not necessary now
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:

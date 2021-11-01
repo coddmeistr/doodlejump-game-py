@@ -1,6 +1,4 @@
-import pygame
-import colors
-import weakref
+from MODULES import *
 
 
 # Class that allows your objects to change colors every tick

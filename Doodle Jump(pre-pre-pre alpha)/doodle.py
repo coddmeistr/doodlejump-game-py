@@ -1,13 +1,10 @@
-import pygame
-import weakref
-import colors
+from MODULES import *
 
 from states_handlers import *
 from delete import *
-import config as c
 from game import Game
 from jumper import Jumper
-from platform import Platform, MovingPlatform, random_platform
+from platform import random_platform
 from text_object import TextObject
 from button import Button
 from statistic import Statistic
@@ -30,6 +27,7 @@ class Doodle(Game):
         # Game states
         self.game_over = False
         self.game_state = 'Menu_main'
+
         self.create_menu()
 
         # Game statistic
@@ -66,8 +64,6 @@ class Doodle(Game):
         self.jumper = jumper
 
         self.objects.append(self.jumper)
-
-        del jumper
 
     def first_platforms_layer(self):
         max_platform_distance = 0
