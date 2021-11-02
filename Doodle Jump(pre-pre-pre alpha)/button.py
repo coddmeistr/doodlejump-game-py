@@ -17,8 +17,7 @@ class Button(GameObject):
     def back_color(self):
         return dict(normal=c.button_normal_back_color,
                     hover=c.button_hover_back_color,
-                    pressed=c.button_pressed_back_color,
-                    pressed_once=c.button_pressed_back_color)[self.state]
+                    pressed=c.button_pressed_back_color)[self.state]
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.back_color, self.bounds)
