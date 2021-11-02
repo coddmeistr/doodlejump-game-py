@@ -1,7 +1,7 @@
+import pygame.mixer_music
 from MODULES import *
-
+from music_sounds import *
 import multicoloring
-
 from collections import defaultdict
 
 
@@ -20,7 +20,7 @@ class Game:
         self.objects_to_remove = []  # garbage collector with delayed remove
         self.platforms = []
         self.buttons = []
-        # pygame.mixer.pre_init(44100, 16, 2, 4096) # not necessary now
+        pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
         pygame.font.init()
         self.surface = pygame.display.set_mode((width, height))
@@ -36,6 +36,13 @@ class Game:
         self.errors_log = dict()
         self.errors_log[AttributeError] = ""
         self.errors_log[ValueError] = ""
+        # settings
+        self.volume_music = 0
+        self.volume_sounds = 0
+        self.difficulty = 0
+        self.load_settings()
+
+        self.music = Music(self.volume_music)
 
     def update(self):
         pass
@@ -47,6 +54,7 @@ class Game:
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.save_settings()
                 # print(self.errors_log) # not necessary now
                 pygame.quit()
                 sys.exit()
@@ -61,6 +69,22 @@ class Game:
                                 pygame.MOUSEMOTION):
                 for handler in self.mouse_handlers:
                     handler(event.type, event.pos)
+
+    def load_settings(self):
+        file_music = open("settings/music.txt")
+        file_sounds = open("settings/sounds.txt")
+        self.volume_music = float(file_music.readline())
+        self.volume_sounds = float(file_sounds.readline())
+        file_music.close()
+        file_sounds.close()
+
+    def save_settings(self):
+        file_music = open("settings/music.txt")
+        file_sounds = open("settings/sounds.txt")
+        file_music.write(str(self.volume_music))
+        file_sounds.write(str(self.volume_sounds))
+        file_music.close()
+        file_sounds.close()
 
     def run(self):
         while not self.game_ending:

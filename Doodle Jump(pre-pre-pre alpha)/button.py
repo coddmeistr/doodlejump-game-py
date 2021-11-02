@@ -9,6 +9,7 @@ class Button(GameObject):
         GameObject.__init__(self, x, y, w, h)
         self.state = 'normal'
         self.on_click = on_click
+        self.backed_to_normal_or_hover = True
 
         self.text = TextObject(x + paddingX, y + paddingY, lambda: text, c.button_text_color, c.font_name, c.font_size)
 

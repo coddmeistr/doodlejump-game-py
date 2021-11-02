@@ -28,6 +28,7 @@ class Doodle(Game):
         self.game_over = False
         self.game_state = 'Menu_main'
 
+        self.music.set_music_theme("menu")
         self.create_menu()
 
         # Game statistic
@@ -47,9 +48,10 @@ class Doodle(Game):
 
     def create_menu_settings(self):
         main_menu_buttons = list()
-        main_menu_buttons.append(Button(c.win_width / 2 - 160 / 2, 150, 160, 60, "ЗВУК", paddingX=16, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 235 / 2, 250, 235, 60, "СЛОЖНОСТЬ", paddingX=16, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 350, 155, 60, "НАЗАД", paddingX=16, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 200 / 2, 100, 200, 60, "ЗВУКИ: " + str(self.volume_sounds), paddingX=17, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 240 / 2, 200, 240, 60, "МУЗЫКА: " + str(self.volume_music), paddingX=20, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 250 / 2, 300, 250, 60, "СЛОЖНОСТЬ", paddingX=17, paddingY=6))
+        main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 400, 155, 60, "НАЗАД", paddingX=22, paddingY=6))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -182,7 +184,9 @@ class Doodle(Game):
             return
         time_elapsed = self.time - self.game_lost_time
         if time_elapsed >= c.after_lost_pause:
+
             self.delete_objects()
+            self.music.set_music_theme("menu")
             self.create_menu()
             self.game_state = "Menu_main"
             self.game_lost_time = -1
