@@ -57,6 +57,7 @@ def playing_game_handler(self):
                 self.collision_dist = abs(plat.top - self.jumper.bottom)
                 self.jumper.isCollision = True
 
+                self.sounds.play_sound("jump")
                 plat.color = colors.RED1
                 plat_was_jumped = 1
 

@@ -9,6 +9,7 @@ from platform import random_platform
 from text_object import TextObject
 from button import Button
 from statistic import Statistic
+from scroller import *
 
 
 class Doodle(Game):
@@ -50,6 +51,9 @@ class Doodle(Game):
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
             self.buttons.append(button)
+
+        create_scroller(self, 100, 100, 200, 100)
+
 
     def create_menu_settings(self):
         main_menu_buttons = list()
@@ -96,7 +100,7 @@ class Doodle(Game):
         heights.sort()
         for h in heights:
             platform = random_platform(random.randint(0, c.win_width - width),
-                                       c.win_height - h, width, long, [0, 100])
+                                       c.win_height - h, width, long, [85, 10, 5])
             platforms.append(platform)
             heights.remove(h)
 

@@ -24,6 +24,10 @@ button_normal_back_color = colors.BLACK
 button_hover_back_color = colors.BLUE
 button_pressed_back_color = colors.GREEN
 
+slider_normal_back_color = colors.BLUE
+slider_hover_back_color = colors.GREEN
+slider_pressed_back_color = colors.RED1
+
 
 # delays(seconds)
 after_lost_pause = 5
