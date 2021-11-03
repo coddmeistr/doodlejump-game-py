@@ -12,16 +12,14 @@ def create_scroller(self, x, y, w, h):
 
 
 class Scroller:
-    def __init__(self, x, y, w, h, rect_color=colors.GRAY40):
+    def __init__(self, x, y, w=200, h=100, rect_color=colors.GRAY40):
 
         self.rect_back = Rectangle(x, y, w, h, rect_color)
         w_l, h_l = w/1.2, h/10
         x_l, y_l = x + (w - w_l)/2, y + (h - h_l)/2
         self.rect_line = Rectangle(x_l, y_l, w_l, h_l, colors.BLACK)
-        w_b, h_b = w_l/16, h_l * 2
-        x_b, y_b = x_l+20, y_l - h_l/2 # Тут нужно менять x
-        self.slider = Slider(x_b, y_b, w_b, h_b)
-        print(self.slider.height)
+        x_s, y_s = x_l+20, y_l - h_l/2 - 3  # Change x here. Also -3 just fixing texture(dont know why it not good)
+        self.slider = Slider(x_s, y_s)
 
     def draw(self, surface):
         self.rect_back.draw(surface)
@@ -30,7 +28,6 @@ class Scroller:
 
     def update(self):
         if self.slider.state == "pressed":
-            print(self.slider.cursor_pos)
             dist = self.slider.cursor_pos[0] - self.slider.centerx
             if dist < 0:
                 dx = -min(abs(dist), abs(self.rect_line.left-self.slider.centerx))
@@ -42,10 +39,13 @@ class Scroller:
 
 
 class Slider(Button):
-    def __init__(self, x, y, w, h):
-        Button.__init__(self, x, y, w, h, "")
+    def __init__(self, x, y):
+        self.texture = pygame.image.load("textures/polzunok.png").convert_alpha()
+        rect = self.texture.get_rect()
+        rect = rect.move(x, y)
+        Button.__init__(self, rectangle=rect)
+
         self.cursor_pos = 0
-        self.texture = pygame.image.load("textures/polzunok.png")
 
     def handle_mouse_move(self, pos):
         self.cursor_pos = pos
@@ -74,8 +74,6 @@ class Slider(Button):
 
     def draw(self, surface):
         surface.blit(self.texture, self.bounds)
-
-
 
 
 class Rectangle(GameObject):

@@ -4,22 +4,25 @@ from game_object import GameObject
 
 
 class Platform(GameObject):
-    def __init__(self, x, y, w, h, color):
-        GameObject.__init__(self, x, y, w, h)
-
-        # values
-        self.color = color
+    def __init__(self, x, y):
+        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
+        rect = self.texture.get_rect()
+        rect = rect.move(x, y)
+        GameObject.__init__(self, rectangle=rect)
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color,  self.bounds)
+        surface.blit(self.texture, self.bounds)
 
     def __del__(self):
         print("ID ", self.ID, " deleted platform")
 
 
-class MovingPlatform(Platform):
-    def __init__(self, x, y, w, h, color, speed):
-        Platform.__init__(self, x, y, w, h, color)
+class MovingPlatform(GameObject):
+    def __init__(self, x, y, speed):
+        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
+        rect = self.texture.get_rect()
+        rect = rect.move(x, y)
+        GameObject.__init__(self, rectangle=rect)
         self.time = 0
 
         # random direction
@@ -51,6 +54,9 @@ class MovingPlatform(Platform):
 
         self.move(dx, 0)
 
+    def draw(self, surface):
+        surface.blit(self.texture, self.bounds)
+
     def update(self):
         self.time += 1/c.framerate
 
@@ -60,15 +66,21 @@ class MovingPlatform(Platform):
         print("ID ", self.ID, " deleted platform(m)")
 
 
-class FakePlatform(Platform):
-    def __init__(self, x, y, w, h, color):
-        Platform.__init__(self, x, y, w, h, color)
+class FakePlatform(GameObject):
+    def __init__(self, x, y):
+        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
+        rect = self.texture.get_rect()
+        rect = rect.move(x, y)
+        GameObject.__init__(self, rectangle=rect)
 
     def __del__(self):
         print("ID ", self.ID, " deleted platform(m)")
 
+    def draw(self, surface):
+        surface.blit(self.texture, self.bounds)
 
-def random_platform(x, y, w, h, chances_list):
+
+def random_platform(x, y, chances_list):
     # 1. DEFAULT PLATFORM, 2. MOVING PLATFORM 3. FAKE PLATFORM
     chances_sum = 0
     for i in chances_list:
@@ -81,9 +93,9 @@ def random_platform(x, y, w, h, chances_list):
             loto.append(i)
     res = loto[random.randint(0, 99)]
     if res == 0:
-        return Platform(x, y, w, h, colors.BLUE)
+        return Platform(x, y)
     elif res == 1:
         speed = 6
-        return MovingPlatform(x, y, w, h, colors.GREEN, speed)
+        return MovingPlatform(x, y, speed)
     elif res == 2:
-        return FakePlatform(x, y, w, h, colors.YELLOW1)
+        return FakePlatform(x, y)

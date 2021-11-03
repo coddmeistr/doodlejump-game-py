@@ -4,11 +4,11 @@ from game_object import GameObject
 
 
 class Jumper(GameObject):
-    def __init__(self, x=0, y=0, w=0, h=0, offsetX=0):
-        GameObject.__init__(self, x, y, w, h)
-
-        # Jumper's texture
-        self.texture = pygame.image.load("textures/jumper_front.png")
+    def __init__(self, x=0, y=0, offsetX=0):
+        self.texture = pygame.image.load("textures/jumper_front.png").convert_alpha()
+        rect = self.texture.get_rect()
+        rect = rect.move(x, y)
+        GameObject.__init__(self, rectangle=rect)
 
         # Moving states
         self.moving_left = False

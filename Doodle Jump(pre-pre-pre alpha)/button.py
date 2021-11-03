@@ -5,8 +5,12 @@ from text_object import TextObject
 
 
 class Button(GameObject):
-    def __init__(self, x, y, w, h, text, on_click=lambda x: None, paddingX=0, paddingY=0):
-        GameObject.__init__(self, x, y, w, h)
+    def __init__(self, x=0, y=0, w=0, h=0, text="", on_click=lambda x: None, paddingX=0, paddingY=0, rectangle=0):
+        if rectangle != 0:
+            GameObject.__init__(self, rectangle=rectangle)
+        else:
+            GameObject.__init__(self, x, y, w, h)
+
         self.state = 'normal'
         self.clicked = False
         self.on_click = on_click

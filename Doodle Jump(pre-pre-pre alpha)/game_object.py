@@ -4,12 +4,15 @@ globals()["ID"] = 0
 
 
 class GameObject:
-    def __init__(self, x, y, w, h, speed=(0, 0)):
+    def __init__(self, x=0, y=0, w=0, h=0, speed=(0, 0), rectangle=0):
         self.ID = globals().get("ID")
         print("ID: ", self.ID)
         globals()["ID"] += 1
 
-        self.bounds = pygame.Rect(x, y, w, h)
+        if rectangle != 0:
+            self.bounds = rectangle
+        else:
+            self.bounds = pygame.Rect(x, y, w, h)
         self.speed = speed
 
     @property
