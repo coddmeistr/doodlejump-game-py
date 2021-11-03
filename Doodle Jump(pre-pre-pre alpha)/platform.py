@@ -60,8 +60,16 @@ class MovingPlatform(Platform):
         print("ID ", self.ID, " deleted platform(m)")
 
 
+class FakePlatform(Platform):
+    def __init__(self, x, y, w, h, color):
+        Platform.__init__(self, x, y, w, h, color)
+
+    def __del__(self):
+        print("ID ", self.ID, " deleted platform(m)")
+
+
 def random_platform(x, y, w, h, chances_list):
-    # 1. DEFAULT PLATFORM, 2. MOVING PLATFORM ...
+    # 1. DEFAULT PLATFORM, 2. MOVING PLATFORM 3. FAKE PLATFORM
     chances_sum = 0
     for i in chances_list:
         chances_sum += i
@@ -77,3 +85,5 @@ def random_platform(x, y, w, h, chances_list):
     elif res == 1:
         speed = 6
         return MovingPlatform(x, y, w, h, colors.GREEN, speed)
+    elif res == 2:
+        return FakePlatform(x, y, w, h, colors.YELLOW1)

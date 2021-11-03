@@ -1,3 +1,4 @@
+import platform
 from MODULES import *
 from music_sounds import *
 from centralizer import *
@@ -47,10 +48,18 @@ def playing_game_handler(self):
     if not self.game_over:
         plat_was_jumped = 0
         plat = self.jumper.collision_check(self.platforms)
+
         if plat is not None:
-            self.sounds.play_sound("jump")
-            plat.color = colors.RED1
-            plat_was_jumped = 1
+            if isinstance(plat, platform.FakePlatform):
+                plat.move(0, c.win_height)
+            else:
+                # Jumper's jump event states
+                self.collision_dist = abs(plat.top - self.jumper.bottom)
+                self.jumper.isCollision = True
+
+                plat.color = colors.RED1
+                plat_was_jumped = 1
+
         height_dif = self.camera_chasing()
 
         self.update_points(height_dif, plat_was_jumped)

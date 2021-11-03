@@ -125,7 +125,7 @@ class Doodle(Game):
         heights.sort()
         for h in heights:
             platform = random_platform(random.randint(0, c.win_width - width),
-                                       c.win_height - h, width, long, [90, 10])
+                                       c.win_height - h, width, long, [70, 10, 20])
             platforms.append(platform)
             heights.remove(h)
 

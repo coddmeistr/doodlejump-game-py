@@ -61,9 +61,6 @@ class Jumper(GameObject):
                 (p.top >= self.bottom) and\
                 (abs(p.top-self.bottom) <= self.offsetY) and\
                     self.jumping_down:
-
-                self.collision_dist = abs(p.top-self.bottom)
-                self.isCollision = True
                 return p
         return None
 
