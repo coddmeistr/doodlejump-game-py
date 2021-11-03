@@ -20,7 +20,7 @@ class Game:
         self.objects_to_remove = []  # garbage collector with delayed remove
         self.platforms = []
         self.buttons = []
-        pygame.mixer.pre_init(44100, 16, 2, 4096)
+        pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.init()
         pygame.font.init()
         self.font = pygame.font.Font(c.font_name, c.font_size)

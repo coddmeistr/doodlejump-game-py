@@ -23,3 +23,6 @@ class TextObject:
 
     def update(self):
         pass
+
+    def __del__(self):
+        print("TEXT deleted")

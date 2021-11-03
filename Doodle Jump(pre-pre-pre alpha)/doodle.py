@@ -41,11 +41,11 @@ class Doodle(Game):
         main_menu_buttons = list()
 
         text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 150, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 150, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 250, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 350, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 350, w, h, text, paddingX=px, paddingY=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -57,11 +57,11 @@ class Doodle(Game):
         text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ: " + str(self.volume_sounds), 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА: " + str(self.volume_music), 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 200, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 300, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 300, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "НАЗАД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 400, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 400, w, h, text, paddingX=px, paddingY=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -87,7 +87,7 @@ class Doodle(Game):
         heights = list()
         for _ in range(random.randint(13, 30)):
             heights.append(random.randint(0, max_platform_distance))
-        heights.append(random.randint(c.win_height, c.win_height+100))
+        heights.append(random.randint(c.win_height, c.win_height + 100))
         maximum_height = max(heights)
 
         width = 40
@@ -145,7 +145,7 @@ class Doodle(Game):
     def create_stats_trackers(self):
         self.max_height_text = Statistic(3, 0, lambda: "height", colors.BLUE, c.font_name, c.font_size_trackers)
         self.points_text = Statistic(3, 30, lambda: "points", colors.BLUE, c.font_name, c.font_size_trackers)
-        self.jumped_platforms_count_text = Statistic(3, 60, lambda: "jumped", colors.BLUE, c.font_name,
+        self.jumped_platforms_count_text = Statistic(3, 60, lambda: "jumps", colors.BLUE, c.font_name,
                                                      c.font_size_trackers)
         self.objects.append(self.max_height_text)
         self.objects.append(self.points_text)
@@ -153,12 +153,14 @@ class Doodle(Game):
 
     def game_lost(self):
         # create basic TextObject to display "GAME LOST!"
-        text = TextObject(c.win_width / 2 - 110, c.win_height / 2 - 60, lambda: "GAME LOST!", colors.RED1, c.font_name,
-                          50)
+        temp_font = pygame.font.Font(c.font_name, 50)
+        text = "GAME LOST!"
+        game_lost_text = TextObject(c.win_width / 2 - temp_font.size(text)[0] / 2, c.win_height / 2 - 60,
+                                    lambda: text, colors.RED1, c.font_name, 50)
         # save params
-        height = self.max_height_text.param+0
-        points = self.points_text.param+0
-        platforms = self.jumped_platforms_count_text.param+0
+        height = self.max_height_text.param + 0
+        points = self.points_text.param + 0
+        platforms = self.jumped_platforms_count_text.param + 0
         # remove and delete old statistic
         self.objects.remove(self.jumped_platforms_count_text)
         self.objects.remove(self.points_text)
@@ -168,23 +170,25 @@ class Doodle(Game):
         self.points_text = None
         self.max_height_text = None
         # create new statistic
-        self.max_height_text = Statistic(c.win_width / 2 - 50, c.win_height / 2 - 15, lambda: "height", colors.ORANGE, c.font_name,
-                           30)
-        self.points_text = Statistic(c.win_width / 2 - 50, c.win_height / 2 + 20, lambda: "points", colors.ORANGE, c.font_name,
-                           30)
-        self.jumped_platforms_count_text = Statistic(c.win_width / 2 - 50, c.win_height / 2 + 55, lambda: "jumped", colors.ORANGE, c.font_name,
-                              30)
-        # set old saved params to the new statistic
-        self.max_height_text.param = height
-        self.points_text.param = points
-        self.jumped_platforms_count_text.param = platforms
+        temp_font = pygame.font.Font(c.font_name, 30)
+        text1 = "height: " + str(int(height))
+        self.max_height_text = TextObject(c.win_width / 2 - temp_font.size(text1)[0] / 2, c.win_height / 2 - 15,
+                                          lambda: text1, colors.ORANGE, c.font_name, 30)
+        text2 = "points: " + str(int(points))
+        self.points_text = TextObject(c.win_width / 2 - temp_font.size(text2)[0] / 2, c.win_height / 2 + 20,
+                                      lambda: text2, colors.ORANGE, c.font_name, 30)
+        text3 = "jumps: " + str(int(platforms))
+        self.jumped_platforms_count_text = TextObject(c.win_width / 2 - temp_font.size(text3)[0] / 2,
+                                                      c.win_height / 2 + 55,
+                                                      lambda: text3, colors.ORANGE, c.font_name, 30)
         # add to multi coloring
-        self.multicolor.add_object(weakref.ref(text), left_color=(0, 0, 255), right_color=(255, 0, 0))
+        self.multicolor.add_object(weakref.ref(game_lost_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.max_height_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.points_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
-        self.multicolor.add_object(weakref.ref(self.jumped_platforms_count_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
+        self.multicolor.add_object(weakref.ref(self.jumped_platforms_count_text), left_color=(0, 0, 255),
+                                   right_color=(255, 0, 0))
         # add them to the objects
-        self.objects.append(text)  # basic TextObject
+        self.objects.append(game_lost_text)  # basic TextObject
         self.objects.append(self.jumped_platforms_count_text)
         self.objects.append(self.points_text)
         self.objects.append(self.max_height_text)
@@ -194,7 +198,6 @@ class Doodle(Game):
             return
         time_elapsed = self.time - self.game_lost_time
         if time_elapsed >= c.after_lost_pause:
-
             self.delete_objects()
             self.music.set_music_theme("menu")
             self.create_menu()
