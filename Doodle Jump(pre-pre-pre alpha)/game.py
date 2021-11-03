@@ -23,6 +23,7 @@ class Game:
         pygame.mixer.pre_init(44100, 16, 2, 4096)
         pygame.init()
         pygame.font.init()
+        self.font = pygame.font.Font(c.font_name, c.font_size)
         self.surface = pygame.display.set_mode((width, height))
         pygame.display.set_caption(caption)
         self.clock = pygame.time.Clock()

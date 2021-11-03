@@ -6,7 +6,7 @@ class TextObject:
         self.pos = (x, y)
         self.text_func = text_func
         self.color = color
-        self.font = pygame.font.SysFont(font_name, font_size)
+        self.font = pygame.font.Font(font_name, font_size)
         self.bounds = self.get_surface(text_func())
 
     def draw(self, surface, centralized=False):

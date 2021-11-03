@@ -1,5 +1,7 @@
 from MODULES import *
 from music_sounds import *
+from centralizer import *
+from button import Button
 
 
 # game_state == Menu_main
@@ -67,7 +69,19 @@ def menu_settings_handler(self):
             self.volume_sounds = self.volume_sounds+10
         else:
             self.volume_sounds = 0
-        self.buttons[0].text.text_func = lambda: "ЗВУКИ: " + str(self.volume_sounds)
+
+        # this code deleting current button and creates new, with new rect and text padding
+        state = self.buttons[0].state
+        self.objects.remove(self.buttons[0])
+        self.mouse_handlers.remove(self.buttons[0].handle_mouse_event)
+        text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ: " + str(self.volume_sounds), 7, 7)
+        button = Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py)
+        button.state = state
+        self.buttons[0] = button
+        self.mouse_handlers.append(button.handle_mouse_event)
+        self.objects.append(button)
+        # this code deleting current button and creates new, with new rect and text padding
+
         self.sounds.change_volume(self.volume_sounds/100)
 
     # Music
@@ -76,7 +90,19 @@ def menu_settings_handler(self):
             self.volume_music = self.volume_music+10
         else:
             self.volume_music = 0
-        self.buttons[1].text.text_func = lambda: "МУЗЫКА: " + str(self.volume_music)
+
+        # this code deleting current button and creates new, with new rect and text padding
+        state = self.buttons[1].state
+        self.objects.remove(self.buttons[1])
+        self.mouse_handlers.remove(self.buttons[1].handle_mouse_event)
+        text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА: " + str(self.volume_music), 7, 7)
+        button = Button(c.win_width / 2 - w / 2, 200, w, h, text, paddingX=px, paddingY=py)
+        button.state = state
+        self.buttons[1] = button
+        self.mouse_handlers.append(button.handle_mouse_event)
+        self.objects.append(button)
+        # this code deleting current button and creates new, with new rect and text padding
+
         self.music.change_volume(self.volume_music/100)
 
     # Difficulty

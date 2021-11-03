@@ -1,5 +1,6 @@
 from MODULES import *
 
+from centralizer import *
 from states_handlers import *
 from delete import *
 from game import Game
@@ -38,9 +39,13 @@ class Doodle(Game):
 
     def create_menu(self):
         main_menu_buttons = list()
-        main_menu_buttons.append(Button(c.win_width / 2 - 160 / 2, 150, 160, 60, "ИГРАТЬ", paddingX=16, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 235 / 2, 250, 235, 60, "НАСТРОЙКИ", paddingX=16, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 350, 155, 60, "ВЫХОД", paddingX=16, paddingY=6))
+
+        text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 150, w, h, text, paddingX=px, paddingY=py))
+        text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 250, w, h, text, paddingX=px, paddingY=py))
+        text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 350, w, h, text, paddingX=px, paddingY=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -48,10 +53,15 @@ class Doodle(Game):
 
     def create_menu_settings(self):
         main_menu_buttons = list()
-        main_menu_buttons.append(Button(c.win_width / 2 - 200 / 2, 100, 200, 60, "ЗВУКИ: " + str(self.volume_sounds), paddingX=17, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 240 / 2, 200, 240, 60, "МУЗЫКА: " + str(self.volume_music), paddingX=20, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 250 / 2, 300, 250, 60, "СЛОЖНОСТЬ", paddingX=17, paddingY=6))
-        main_menu_buttons.append(Button(c.win_width / 2 - 155 / 2, 400, 155, 60, "НАЗАД", paddingX=22, paddingY=6))
+
+        text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ: " + str(self.volume_sounds), 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py))
+        text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА: " + str(self.volume_music), 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 200, w, h, text, paddingX=px, paddingY=py))
+        text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 300, w, h, text, paddingX=px, paddingY=py))
+        text, w, h, px, py = get_centralized_params(self.font, "НАЗАД", 7, 7)
+        main_menu_buttons.append(Button(c.win_width / 2 - w/2, 400, w, h, text, paddingX=px, paddingY=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)

@@ -16,8 +16,7 @@ jump_duration = 1
 
 # menu
 font_size = 40
-font_better = 'fonts/BeVietnamPro-Light'
-font_name = 'Arial'
+font_name = 'fonts/arial.ttf'
 font_size_trackers = 15
 button_text_color = colors.WHITE
 button_back_color = colors.BLACK
