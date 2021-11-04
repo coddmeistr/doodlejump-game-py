@@ -1,3 +1,5 @@
+import pygame.mixer_music
+
 import config
 from MODULES import *
 
@@ -52,14 +54,12 @@ class Doodle(Game):
             self.objects.append(button)
             self.buttons.append(button)
 
-        create_scroller(self, 150, 150, 200, 100)
-
     def create_menu_settings(self):
         main_menu_buttons = list()
 
-        text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ: " + str(self.volume_sounds), 7, 7)
+        text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py))
-        text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА: " + str(self.volume_music), 7, 7)
+        text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, paddingX=px, paddingY=py))
         text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 300, w, h, text, paddingX=px, paddingY=py))
@@ -263,7 +263,6 @@ class Doodle(Game):
 
     def update(self):
         self.time += 1 / c.framerate
-
         # STATES HANDLERS HERE
         # STATES HANDLERS HERE
         if self.game_state == "Menu_main":
@@ -282,6 +281,19 @@ class Doodle(Game):
         # generic objects manipulation
         for o in self.objects:
             o.update()
+
+            if self.game_state == "Menu_settings":
+                try:
+                    if o.delete_cond():
+                        for elem in o.blocked_elems:
+                            elem.enable()
+                        self.objects_to_remove.append(o)
+                        self.mouse_handlers.remove(o.slider.handle_mouse_event)
+                        self.mouse_handlers.remove(o.rect_back.handle_mouse_event)
+                except AttributeError:
+                    self.errors_log[AttributeError] += "doodle.py: update(): for o in self.objects:...\n"
+                except BaseException:
+                    raise RuntimeError("UNKNOWN UNHANDLED ERROR: doodle.py: for o in self.objects:...\n")
 
             # delete movable object, IF HE IS LOWER THAT c.win_height + 10
             if self.game_state == "Play":

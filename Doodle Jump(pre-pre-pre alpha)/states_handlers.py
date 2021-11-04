@@ -3,6 +3,7 @@ from MODULES import *
 from music_sounds import *
 from centralizer import *
 from button import Button
+from scroller import *
 
 
 # game_state == Menu_main
@@ -75,45 +76,29 @@ def playing_game_handler(self):
 def menu_settings_handler(self):
     # Sound
     if self.buttons[0].clicked:
-        if self.volume_sounds <= 90:
-            self.volume_sounds = self.volume_sounds+10
-        else:
-            self.volume_sounds = 0
 
-        # this code deleting current button and creates new, with new rect and text padding
-        state = self.buttons[0].state
-        self.objects.remove(self.buttons[0])
-        self.mouse_handlers.remove(self.buttons[0].handle_mouse_event)
-        text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ: " + str(self.volume_sounds), 7, 7)
-        button = Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py)
-        button.state = state
-        self.buttons[0] = button
-        self.mouse_handlers.append(button.handle_mouse_event)
-        self.objects.append(button)
-        # this code deleting current button and creates new, with new rect and text padding
-
-        self.sounds.change_volume(self.volume_sounds/100)
+        blocked = []
+        for button in self.buttons:
+            button.disable()
+            blocked.append(button)
+        w, h = 200, 100
+        create_scroller(self, self.buttons[0].right+50, self.buttons[0].top-25, self.sounds.volume, self.sounds.change_volume,
+                        [0, 1],
+                        w=w, h=h,
+                        blocked=blocked)
 
     # Music
     if self.buttons[1].clicked:
-        if self.volume_music <= 90:
-            self.volume_music = self.volume_music+10
-        else:
-            self.volume_music = 0
 
-        # this code deleting current button and creates new, with new rect and text padding
-        state = self.buttons[1].state
-        self.objects.remove(self.buttons[1])
-        self.mouse_handlers.remove(self.buttons[1].handle_mouse_event)
-        text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА: " + str(self.volume_music), 7, 7)
-        button = Button(c.win_width / 2 - w / 2, 200, w, h, text, paddingX=px, paddingY=py)
-        button.state = state
-        self.buttons[1] = button
-        self.mouse_handlers.append(button.handle_mouse_event)
-        self.objects.append(button)
-        # this code deleting current button and creates new, with new rect and text padding
-
-        self.music.change_volume(self.volume_music/100)
+        blocked = []
+        for button in self.buttons:
+            button.disable()
+            blocked.append(button)
+        w, h = 200, 100
+        create_scroller(self, self.buttons[1].right+50, self.buttons[1].top-25, self.music.volume, self.music.change_volume,
+                        [0, 1],
+                        w=w, h=h,
+                        blocked=blocked)
 
     # Difficulty
     if self.buttons[2].clicked:

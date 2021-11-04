@@ -38,12 +38,9 @@ class Game:
         self.errors_log[AttributeError] = ""
         self.errors_log[ValueError] = ""
         # settings
-        self.volume_music = 0
-        self.volume_sounds = 0
+        self.music = Music()
+        self.sounds = Sounds()
         self.load_settings()
-
-        self.music = Music(self.volume_music)
-        self.sounds = Sounds(self.volume_sounds)
 
     def update(self):
         pass
@@ -74,16 +71,16 @@ class Game:
     def load_settings(self):
         file_music = open("settings/music.txt")
         file_sounds = open("settings/sounds.txt")
-        self.volume_music = int(file_music.readline())
-        self.volume_sounds = int(file_sounds.readline())
+        self.music.change_volume(float(file_music.readline()))
+        self.sounds.change_volume(float(file_sounds.readline()))
         file_music.close()
         file_sounds.close()
 
     def save_settings(self):
         file_music = open("settings/music.txt", "w")
         file_sounds = open("settings/sounds.txt", "w")
-        file_music.write(str(self.volume_music))
-        file_sounds.write(str(self.volume_sounds))
+        file_music.write(str(self.music.volume))
+        file_sounds.write(str(self.sounds.volume))
         file_music.close()
         file_sounds.close()
 
