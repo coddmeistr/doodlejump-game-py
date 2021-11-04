@@ -36,6 +36,8 @@ class Button(RectObject):
                 self.handle_mouse_click(pos)
             elif etype == pygame.MOUSEBUTTONUP:
                 self.handle_mouse_up(pos)
+        else:
+            self.state = "normal"
 
     def handle_mouse_move(self, pos):
         if self.rect.collidepoint(pos):
