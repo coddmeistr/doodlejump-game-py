@@ -5,13 +5,7 @@ from game_object import GameObject
 
 class Platform(GameObject):
     def __init__(self, x, y):
-        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
-        rect = self.texture.get_rect()
-        rect = rect.move(x, y)
-        GameObject.__init__(self, rectangle=rect)
-
-    def draw(self, surface):
-        surface.blit(self.texture, self.bounds)
+        GameObject.__init__(self, x, y, "textures/platform_basic.png")
 
     def __del__(self):
         print("ID ", self.ID, " deleted platform")
@@ -19,10 +13,8 @@ class Platform(GameObject):
 
 class MovingPlatform(GameObject):
     def __init__(self, x, y, speed):
-        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
-        rect = self.texture.get_rect()
-        rect = rect.move(x, y)
-        GameObject.__init__(self, rectangle=rect)
+        GameObject.__init__(self, x, y, "textures/platform_basic.png")
+
         self.time = 0
 
         # random direction
@@ -54,9 +46,6 @@ class MovingPlatform(GameObject):
 
         self.move(dx, 0)
 
-    def draw(self, surface):
-        surface.blit(self.texture, self.bounds)
-
     def update(self):
         self.time += 1/c.framerate
 
@@ -68,16 +57,10 @@ class MovingPlatform(GameObject):
 
 class FakePlatform(GameObject):
     def __init__(self, x, y):
-        self.texture = pygame.image.load("textures/platform_basic.png").convert_alpha()
-        rect = self.texture.get_rect()
-        rect = rect.move(x, y)
-        GameObject.__init__(self, rectangle=rect)
+        GameObject.__init__(self, x, y, "textures/platform_basic.png")
 
     def __del__(self):
         print("ID ", self.ID, " deleted platform(m)")
-
-    def draw(self, surface):
-        surface.blit(self.texture, self.bounds)
 
 
 def random_platform(x, y, chances_list):

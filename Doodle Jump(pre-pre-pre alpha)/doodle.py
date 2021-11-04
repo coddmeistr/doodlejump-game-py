@@ -1,3 +1,4 @@
+import config
 from MODULES import *
 
 from centralizer import *
@@ -26,17 +27,16 @@ class Doodle(Game):
         self.last_platform_height = 0
         self.tracking_platform = None
 
-        # Game states
-        self.game_over = False
-        self.game_state = 'Menu_main'
-
-        self.music.set_music_theme("menu")
-        self.create_menu()
-
         # Game statistic
         self.points_text = None
         self.jumped_platforms_count_text = None
         self.max_height_text = None
+
+        # Init actions(create menu, set game over var, set music, set game state)
+        self.game_over = False
+        self.game_state = 'Menu_main'
+        self.music.set_music_theme("menu")
+        self.create_menu()
 
     def create_menu(self):
         main_menu_buttons = list()
@@ -52,8 +52,7 @@ class Doodle(Game):
             self.objects.append(button)
             self.buttons.append(button)
 
-        create_scroller(self, 100, 100, 200, 100)
-
+        create_scroller(self, 150, 150, 200, 100)
 
     def create_menu_settings(self):
         main_menu_buttons = list()
@@ -72,7 +71,7 @@ class Doodle(Game):
             self.buttons.append(button)
 
     def create_jumper(self):
-        jumper = Jumper(c.win_width / 2, c.win_height / 2 - 15, 20, 30, c.jumper_speedX)
+        jumper = Jumper(c.win_width / 2, c.win_height / 2 - 15, c.jumper_speedX)
         self.keydown_handlers[pygame.K_LEFT].append(jumper.handle)
         self.keydown_handlers[pygame.K_RIGHT].append(jumper.handle)
         self.keyup_handlers[pygame.K_LEFT].append(jumper.handle)
@@ -90,24 +89,24 @@ class Doodle(Game):
 
         heights = list()
         for _ in range(random.randint(13, 30)):
-            heights.append(random.randint(0, max_platform_distance))
+            heights.append(random.randint(200, max_platform_distance))
         heights.append(random.randint(c.win_height, c.win_height + 100))
         maximum_height = max(heights)
 
-        width = 40
-        long = 5
         platforms = []
         heights.sort()
         for h in heights:
-            platform = random_platform(random.randint(0, c.win_width - width),
-                                       c.win_height - h, width, long, [85, 10, 5])
-            platforms.append(platform)
-            heights.remove(h)
+            p = random_platform(0, 0, [85, 10, 5])
+            x = random.randint(0, c.win_width - p.width)
+            y = c.win_height - h
+            p.move(x, y)
+
+            platforms.append(p)
 
         self.tracking_platform = platforms[-1]
-        for platform in platforms:
-            self.platforms.append(platform)
-            self.objects.append(platform)
+        for p in platforms:
+            self.platforms.append(p)
+            self.objects.append(p)
 
         self.last_platform_height = maximum_height
 
@@ -123,28 +122,39 @@ class Doodle(Game):
             heights.append(random.randint(c.win_height, c.win_height + max_platform_distance))
         maximum_height = max(heights)
 
-        width = 40
-        long = 5
         platforms = []
         heights.sort()
         for h in heights:
-            platform = random_platform(random.randint(0, c.win_width - width),
-                                       c.win_height - h, width, long, [70, 10, 20])
-            platforms.append(platform)
-            heights.remove(h)
+            p = random_platform(0, 0, [85, 10, 5])
+            x = random.randint(0, c.win_width - p.width)
+            y = c.win_height - h
+            p.move(x, y)
+
+            platforms.append(p)
 
         self.tracking_platform = platforms[-1]
-        for platform in platforms:
-            self.platforms.append(platform)
-            self.objects.append(platform)
+        for p in platforms:
+            self.platforms.append(p)
+            self.objects.append(p)
 
         self.last_platform_height = maximum_height
 
     def create_plato(self):
-        for i in range(0, c.win_width // 40):
-            platform = random_platform(i * 40, c.win_height - 5, 40, 5, [100, 0])
-            self.platforms.append(platform)
-            self.objects.append(platform)
+        p = random_platform(0, 0, [100, 0, 0])
+        x = 0
+        y = c.win_height - p.height
+        p.move(x, y)
+        self.platforms.append(p)
+        self.objects.append(p)
+        width = p.width
+        for i in range(1, (c.win_width // width) + 1):
+            p = random_platform(0, 0, [100, 0, 0])
+            x = i * p.width
+            y = c.win_height - p.height
+            p.move(x, y)
+
+            self.platforms.append(p)
+            self.objects.append(p)
 
     def create_stats_trackers(self):
         self.max_height_text = Statistic(3, 0, lambda: "height", colors.BLUE, c.font_name, c.font_size_trackers)

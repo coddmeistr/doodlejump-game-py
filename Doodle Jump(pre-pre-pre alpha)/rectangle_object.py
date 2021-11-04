@@ -5,13 +5,9 @@ from MODULES import *
 globals()["ID"] = 0
 
 
-class GameObject(pygame.sprite.Sprite):
-    def __init__(self, x, y, image, speed=(0, 0)):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+class RectObject:
+    def __init__(self, x, y, w, h, speed=(0, 0)):
+        self.rect = pygame.Rect(x, y, w, h)
         self.speed = speed
 
         self.ID = globals().get("ID")
@@ -55,7 +51,7 @@ class GameObject(pygame.sprite.Sprite):
         return self.rect.centery
 
     def draw(self, surface):
-        surface.blit(self.image, self.rect)
+        pass
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)
@@ -67,4 +63,4 @@ class GameObject(pygame.sprite.Sprite):
         self.move(*self.speed)
 
     def __del__(self):
-        print("GAME OBJECT DELETED. UNDEFINED OBJECT, SOMETHING WRONG!")
+        print("RECTANGLE OBJECT DELETED. UNDEFINED OBJECT, SOMETHING WRONG!")

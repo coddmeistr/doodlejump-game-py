@@ -1,8 +1,8 @@
 import colors
 from MODULES import *
 
-from game_object import GameObject
-from button import Button
+from rectangle_object import RectObject
+from button_sprite import ButtonSprite
 
 
 def create_scroller(self, x, y, w, h):
@@ -38,12 +38,9 @@ class Scroller:
             self.slider.move(dx, 0)
 
 
-class Slider(Button):
+class Slider(ButtonSprite):
     def __init__(self, x, y):
-        self.texture = pygame.image.load("textures/polzunok.png").convert_alpha()
-        rect = self.texture.get_rect()
-        rect = rect.move(x, y)
-        Button.__init__(self, rectangle=rect)
+        ButtonSprite.__init__(self, x, y, "", "textures/polzunok.png")
 
         self.cursor_pos = 0
 
@@ -51,17 +48,17 @@ class Slider(Button):
         self.cursor_pos = pos
         if self.state == "pressed":
             return
-        if self.bounds.collidepoint(pos):
+        if self.rect.collidepoint(pos):
             self.state = "hover"
         else:
             self.state = "normal"
 
     def handle_mouse_down(self, pos):
-        if self.bounds.collidepoint(pos):
+        if self.rect.collidepoint(pos):
             self.state = 'pressed'
 
     def handle_mouse_up(self, pos):
-        if self.state == 'pressed' and self.bounds.collidepoint(pos):
+        if self.state == 'pressed' and self.rect.collidepoint(pos):
             self.state = 'hover'
         else:
             self.state = "normal"
@@ -72,17 +69,14 @@ class Slider(Button):
                     hover=c.slider_hover_back_color,
                     pressed=c.slider_pressed_back_color)[self.state]
 
-    def draw(self, surface):
-        surface.blit(self.texture, self.bounds)
 
-
-class Rectangle(GameObject):
+class Rectangle(RectObject):
     def __init__(self, x, y, w, h, color):
-        GameObject.__init__(self, x, y, w, h)
+        RectObject.__init__(self, x, y, w, h)
         self.color = color
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color,  self.bounds)
+        pygame.draw.rect(surface, self.color,  self.rect)
 
     def __del__(self):
         print("ID ", self.ID, " deleted Rectangle")

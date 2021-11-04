@@ -1,12 +1,12 @@
 from MODULES import *
 
-from rectangle_object import RectObject
+from game_object import GameObject
 from text_object import TextObject
 
 
-class Button(RectObject):
-    def __init__(self, x=0, y=0, w=0, h=0, text="", paddingX=0, paddingY=0):
-        RectObject.__init__(self, x, y, w, h)
+class ButtonSprite(GameObject):
+    def __init__(self, x, y, text, image, paddingX=0, paddingY=0):
+        GameObject.__init__(self, x, y, image)
 
         self.state = 'normal'
         self.clicked = False
@@ -19,10 +19,6 @@ class Button(RectObject):
         return dict(normal=c.button_normal_back_color,
                     hover=c.button_hover_back_color,
                     pressed=c.button_pressed_back_color)[self.state]
-
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.back_color, self.rect)
-        self.text.draw(surface)
 
     def reset(self):
         self.clicked = False
@@ -70,3 +66,5 @@ class Button(RectObject):
 
     def __del__(self):
         print("ID ", self.ID, " deleted button")
+
+

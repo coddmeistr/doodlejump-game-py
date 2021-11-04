@@ -1,3 +1,5 @@
+import pygame.sprite
+
 from MODULES import *
 
 from game_object import GameObject
@@ -5,10 +7,7 @@ from game_object import GameObject
 
 class Jumper(GameObject):
     def __init__(self, x=0, y=0, offsetX=0):
-        self.texture = pygame.image.load("textures/jumper_front.png").convert_alpha()
-        rect = self.texture.get_rect()
-        rect = rect.move(x, y)
-        GameObject.__init__(self, rectangle=rect)
+        GameObject.__init__(self, x, y, "textures/jumper_front.png")
 
         # Moving states
         self.moving_left = False
@@ -64,6 +63,9 @@ class Jumper(GameObject):
                 return p
         return None
 
+    def jumper_death(self):
+        self.game_over = True
+
     # Vertical moving(jumping)
     def jumping_move(self):
         if self.time >= 0 and self.jumping_up:
@@ -105,7 +107,7 @@ class Jumper(GameObject):
     def update(self):
         # Check lost condition
         if self.top > c.win_height:
-            self.game_over = True
+            self.jumper_death()
 
         # Increase time via frame rate
         self.time += 1/c.framerate
@@ -113,10 +115,6 @@ class Jumper(GameObject):
         # Moving
         self.jumping_move()
         self.horizontal_move()
-
-    def draw(self, surface):
-        # pygame.draw.rect(surface, self.color, self.bounds) # not necessary
-        surface.blit(self.texture, self.bounds)
 
     def __del__(self):
         print("ID ", self.ID, " deleted JUMPER")

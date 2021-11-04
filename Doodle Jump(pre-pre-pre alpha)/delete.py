@@ -9,7 +9,7 @@ def delete_trackers(trackers, errors_log):
             del o.text_func
             del o.param
             del o.text
-            o.bounds = None
+            o.rect = None
             o.text_func = None
             o.param = 0
             o.text = None
