@@ -24,5 +24,8 @@ class TextObject:
     def update(self):
         pass
 
+    def move(self, dx, dy):
+        self.rect = self.rect.move(dx, dy)
+
     def __del__(self):
         print("TEXT deleted")

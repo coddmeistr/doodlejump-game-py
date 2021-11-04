@@ -5,7 +5,7 @@ from MODULES import *
 def delete_trackers(trackers, errors_log):
     try:
         for o in trackers:
-            del o.bounds
+            del o.rect
             del o.text_func
             del o.param
             del o.text
