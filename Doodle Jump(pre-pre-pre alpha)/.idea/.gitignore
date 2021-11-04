@@ -1,3 +1,11 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+
+# ignore cataloges
+music/
+settings/
+sounds/
+textures/
+images/
+fonts/
