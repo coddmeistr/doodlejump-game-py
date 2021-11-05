@@ -71,9 +71,10 @@ class Jumper(GameObject):
 
     # Vertical moving(jumping)
     def jumping_move(self):
-        if self.time >= 0 and self.jumping_up:
+        if self.time > 0 and self.jumping_up:
             self.jumping_up = False
             self.jumping_down = True
+            print(self.centery)
         if self.isCollision and self.jumping_down:
             self.time = -self.JUMP_DURATION
             self.last_height = 0
@@ -81,13 +82,15 @@ class Jumper(GameObject):
             self.jumping_down = False
             self.collision_dist = 1000
             self.isCollision = False
+            print(self.centery)
 
         dy = 0
         self.offsetY = abs(self.offset_fun())
         if self.jumping_down:
             dy = min(self.offsetY, self.collision_dist)
         elif self.jumping_up:
-            dy = -min(self.offsetY, self.centery - c.win_height / 2)
+            #dy = -min(self.offsetY, self.centery - c.win_height / 2)
+            dy = -self.offsetY
         self.last_dy = dy
 
         self.move(0, dy)
@@ -118,10 +121,6 @@ class Jumper(GameObject):
         # Moving
         self.jumping_move()
         self.horizontal_move()
-
-        #debug
-        print(self.centery-self.prev_centery, " ", self.last_dy)
-        self.prev_centery = self.centery
 
     def __del__(self):
         print("ID ", self.ID, " deleted JUMPER")

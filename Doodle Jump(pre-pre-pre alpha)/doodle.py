@@ -28,6 +28,7 @@ class Doodle(Game):
 
         # platforms creation
         self.last_platform_height = 0
+        self.jumped_platform_height = 0
         self.tracking_platform = None
 
         # Game statistic
@@ -139,6 +140,14 @@ class Doodle(Game):
             self.objects.append(p)
 
         self.last_platform_height = maximum_height
+
+    def create_saving_platform(self):
+        p = random_platform(0, 0, [0, 100, 0])
+        x = random.randint(0, c.win_width - p.width)
+        y = c.win_height - self.jumper.JUMP_HEIGHT
+        p.move(x, y)
+        self.objects.append(p)
+        self.platforms.append(p)
 
     def create_plato(self):
         p = random_platform(0, 0, [100, 0, 0])

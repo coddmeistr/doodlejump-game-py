@@ -51,6 +51,9 @@ def playing_game_handler(self):
         plat = self.jumper.collision_check(self.platforms)
 
         if plat is not None:
+            self.jumped_platform_height = plat.height
+            self.create_saving_platform()
+
             if isinstance(plat, platform.FakePlatform):
                 plat.move(0, c.win_height)
             else:
@@ -67,7 +70,8 @@ def playing_game_handler(self):
         self.update_points(height_dif, plat_was_jumped)
 
         if self.tracking_platform.top >= 0:
-            self.another_platforms()
+            pass
+            #self.another_platforms()
     else:
         self.game_lost_pause()
 
