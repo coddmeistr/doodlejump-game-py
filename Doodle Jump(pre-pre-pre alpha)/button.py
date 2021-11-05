@@ -71,4 +71,5 @@ class Button(RectObject):
         self.reset_click()
 
     def __del__(self):
-        print("ID ", self.ID, " deleted button")
+        pass
+        #print("ID ", self.ID, " deleted button")

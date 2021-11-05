@@ -11,7 +11,7 @@ class RectObject:
         self.speed = speed
 
         self.ID = globals().get("ID")
-        print("ID: ", self.ID)
+        #print("ID: ", self.ID)
         globals()["ID"] += 1
 
     @property

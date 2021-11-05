@@ -10,7 +10,8 @@ class Platform(GameObject):
         GameObject.__init__(self, x, y, "textures/platform_basic.png")
 
     def __del__(self):
-        print("ID ", self.ID, " deleted platform")
+        pass
+        #print("ID ", self.ID, " deleted platform")
 
 
 class MovingPlatform(GameObject):
@@ -54,7 +55,8 @@ class MovingPlatform(GameObject):
         self.move_horizontal()
 
     def __del__(self):
-        print("ID ", self.ID, " deleted platform(m)")
+        pass
+        #print("ID ", self.ID, " deleted platform(m)")
 
 
 class FakePlatform(GameObject):
@@ -95,7 +97,8 @@ class FakePlatform(GameObject):
             self.ticks_passed += 1
 
     def __del__(self):
-        print("ID ", self.ID, " deleted platform(m)")
+        pass
+        #print("ID ", self.ID, " deleted platform(m)")
 
 
 def random_platform(x, y, chances_list):

@@ -111,4 +111,5 @@ class Rectangle(RectObject):
             self.delete_scroller_state = True
 
     def __del__(self):
-        print("ID ", self.ID, " deleted Rectangle")
+        pass
+        #print("ID ", self.ID, " deleted Rectangle")

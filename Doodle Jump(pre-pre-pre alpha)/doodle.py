@@ -1,6 +1,7 @@
 import pygame.mixer_music
 
 import config
+import jumper
 from MODULES import *
 
 from centralizer import *
@@ -85,7 +86,7 @@ class Doodle(Game):
         if self.jumper.JUMP_DURATION * c.framerate * self.jumper.offsetX >= c.win_width / 2:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
         else:
-            pass
+            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
 
         heights = list()
         for _ in range(random.randint(13, 30)):
@@ -115,7 +116,7 @@ class Doodle(Game):
         if self.jumper.JUMP_DURATION * c.framerate * self.jumper.offsetX >= c.win_width / 2:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
         else:
-            pass
+            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
 
         heights = list()
         for _ in range(random.randint(13, 30)):
@@ -219,11 +220,13 @@ class Doodle(Game):
             self.game_lost_time = -1
 
     def camera_chasing(self):
-        if self.jumper.centery < c.win_height / 2 and self.jumper.last_dy < 0:
+        if self.jumper.jumping_up:
+            change = self.jumper.offsetY - abs(self.jumper.last_dy)
             for o in self.objects:
-                o.move(0, -self.jumper.last_dy)
-            self.last_platform_height -= self.jumper.last_dy
-            return -self.jumper.last_dy  # returns height change (high)
+                if not isinstance(o, jumper.Jumper):
+                    o.move(0, change)
+                    self.last_platform_height -= change
+            return change+0  # returns height change (high)
         return 0
 
     def update_points(self, height_delta, jumped_plat):
@@ -283,6 +286,7 @@ class Doodle(Game):
             o.update()
 
             if self.game_state == "Menu_settings":
+                # try to delete scroller
                 try:
                     if o.delete_cond():
                         for elem in o.blocked_elems:

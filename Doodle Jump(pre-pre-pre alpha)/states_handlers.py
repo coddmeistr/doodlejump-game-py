@@ -77,6 +77,7 @@ def menu_settings_handler(self):
     # Sound
     if self.buttons[0].clicked:
 
+        # volume scroller creation
         blocked = []
         for button in self.buttons:
             button.disable()
@@ -90,6 +91,7 @@ def menu_settings_handler(self):
     # Music
     if self.buttons[1].clicked:
 
+        # volume scroller creation
         blocked = []
         for button in self.buttons:
             button.disable()

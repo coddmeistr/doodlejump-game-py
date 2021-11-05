@@ -14,4 +14,5 @@ class Statistic(TextObject):
         self.text_func = lambda: self.text+": "+str(int(self.param))
 
     def __del__(self):
-        print("stats tracker deleted")
+        pass
+        #print("stats tracker deleted")

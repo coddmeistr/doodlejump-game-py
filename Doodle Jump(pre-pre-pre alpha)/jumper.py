@@ -32,6 +32,9 @@ class Jumper(GameObject):
         # global game jumper's states
         self.game_over = False
 
+        #debug
+        self.prev_centery = self.centery
+
     # Find "a" coeff in a jumping formula ( ax^2 + c )
     def find_a_coeff(self):
         return -self.JUMP_HEIGHT / (self.JUMP_DURATION ** 2)
@@ -84,7 +87,7 @@ class Jumper(GameObject):
         if self.jumping_down:
             dy = min(self.offsetY, self.collision_dist)
         elif self.jumping_up:
-            dy = -self.offsetY
+            dy = -min(self.offsetY, self.centery - c.win_height / 2)
         self.last_dy = dy
 
         self.move(0, dy)
@@ -115,6 +118,10 @@ class Jumper(GameObject):
         # Moving
         self.jumping_move()
         self.horizontal_move()
+
+        #debug
+        print(self.centery-self.prev_centery, " ", self.last_dy)
+        self.prev_centery = self.centery
 
     def __del__(self):
         print("ID ", self.ID, " deleted JUMPER")
