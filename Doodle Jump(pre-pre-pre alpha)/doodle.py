@@ -20,6 +20,10 @@ class Doodle(Game):
 
         self.jumper = Jumper()
 
+        # Background moving
+        self.height_passed = 0
+        self.height_to_one_pixel_move = 1000
+
         # Time trackers(for any events)
         self.time = 0  # Main time tracker
         self.game_lost_time = -1
@@ -220,6 +224,7 @@ class Doodle(Game):
         if time_elapsed >= c.after_lost_pause:
             self.delete_objects()
             self.music.set_music_theme("menu")
+            self.background.change_background_menu("default")
             self.create_menu()
             self.game_state = "Menu_main"
             self.game_lost_time = -1

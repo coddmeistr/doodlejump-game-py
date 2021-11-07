@@ -11,7 +11,7 @@ framerate = 60
 jumper_speedX = 10
 jumper_speedY = 6
 jump_time = 1
-start_speed = 30
+start_speed = 40
 
 
 # menu

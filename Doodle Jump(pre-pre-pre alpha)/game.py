@@ -1,5 +1,6 @@
 import pygame.mixer_music
 from music_sounds import *
+from background import *
 import multicoloring
 from collections import defaultdict
 
@@ -22,6 +23,7 @@ class Game:
         pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.init()
         pygame.font.init()
+        self.background = Background(back_image_filename)
         self.font = pygame.font.Font(c.font_name, c.font_size)
         self.surface = pygame.display.set_mode((width, height))
         pygame.display.set_caption(caption)
@@ -85,7 +87,7 @@ class Game:
 
     def run(self):
         while not self.game_ending:
-            self.surface.blit(self.background_image_menu, (0, 0))
+            self.background.draw(self.surface)
 
             self.handle_events()
             self.update()

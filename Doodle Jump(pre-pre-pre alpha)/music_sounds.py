@@ -29,6 +29,7 @@ class Sounds:
         self.volume = 0
         # Add sounds here
         self.sounds["jump"] = pygame.mixer.Sound("sounds/jump.wav")
+        self.sounds["fake_break"] = pygame.mixer.Sound("sounds/fake_platform_break.wav")
         for sound in self.sounds.items():
             pygame.mixer.Sound.set_volume(sound[1], self.volume)
 

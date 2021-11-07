@@ -16,6 +16,7 @@ def main_menu_handler(self):
         self.create_stats_trackers()
 
         self.music.set_music_theme("play")
+        self.background.change_background_game("level_1")
 
         self.game_over = False
         self.game_state = "Play"
@@ -47,6 +48,7 @@ def playing_game_handler(self):
             print(self.jumper.bottom)
 
             if isinstance(plat, platform.FakePlatform):
+                self.sounds.play_sound("fake_break")
                 plat.move(0, c.win_height)
             else:
                 # Jumper's jump event states
@@ -59,10 +61,15 @@ def playing_game_handler(self):
 
         height_dif = self.camera_chasing()
 
+        # Background moving
+        self.height_passed += height_dif
+        if self.height_passed >= self.height_to_one_pixel_move:
+            self.background.change_offset(0, 1)
+            self.height_passed -= self.height_to_one_pixel_move
+
         self.update_points(height_dif, plat_was_jumped)
 
         if self.tracking_platform.top >= 0:
-            pass
             self.another_platforms()
 
         if self.jumper.game_over:
