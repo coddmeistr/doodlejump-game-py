@@ -5,14 +5,15 @@ from text_object import TextObject
 
 
 class Button(RectObject):
-    def __init__(self, x=0, y=0, w=0, h=0, text="", paddingX=0, paddingY=0):
+    def __init__(self, x=0, y=0, w=0, h=0, text="", padding_x=0, padding_y=0):
         RectObject.__init__(self, x, y, w, h)
 
         self.state = 'normal'
         self.clicked = False
         self.disabled = False
 
-        self.text = TextObject(x + paddingX, y + paddingY, lambda: text, c.button_text_color, c.font_name, c.font_size)
+        self.text = TextObject(x + padding_x, y + padding_y, lambda: text, c.button_text_color,
+                               c.font_name, c.font_size)
 
     @property
     def back_color(self):
@@ -35,7 +36,7 @@ class Button(RectObject):
                 self.handle_mouse_down(pos)
                 self.handle_mouse_click(pos)
             elif etype == pygame.MOUSEBUTTONUP:
-                self.handle_mouse_up(pos)
+                self.handle_mouse_up()
         else:
             self.state = "normal"
 
@@ -50,7 +51,7 @@ class Button(RectObject):
         if self.rect.collidepoint(pos):
             self.state = 'pressed'
 
-    def handle_mouse_up(self, pos):
+    def handle_mouse_up(self):
         if self.state == 'pressed':
             self.state = 'hover'
 
@@ -72,4 +73,4 @@ class Button(RectObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted button")
+        # print("ID ", self.ID, " deleted button")

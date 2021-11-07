@@ -1,5 +1,4 @@
 import pygame.mixer_music
-from MODULES import *
 from music_sounds import *
 import multicoloring
 from collections import defaultdict

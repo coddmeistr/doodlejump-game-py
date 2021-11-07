@@ -10,8 +10,8 @@ framerate = 60
 # Jumper settings
 jumper_speedX = 10
 jumper_speedY = 6
-jump_height = 10000
-jump_duration = 4
+jump_time = 1
+start_speed = 30
 
 
 # menu
@@ -36,5 +36,3 @@ after_lost_pause = 5
 # platforms
 def duration_moving_platforms():
     return (random.random()*1.5)+0.5
-
-

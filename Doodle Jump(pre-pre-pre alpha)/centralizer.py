@@ -9,6 +9,3 @@ def get_centralized_params(font_obj, text, border_pixels_w, border_pixels_h):
     padding_y = border_pixels_h
 
     return text, width, height, padding_x, padding_y
-
-
-

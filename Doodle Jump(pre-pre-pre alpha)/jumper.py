@@ -1,3 +1,5 @@
+import math
+
 import pygame.sprite
 
 from MODULES import *
@@ -6,7 +8,7 @@ from game_object import GameObject
 
 
 class Jumper(GameObject):
-    def __init__(self, x=0, y=0, offsetX=0):
+    def __init__(self, x=0, y=0, offset_x=0):
         GameObject.__init__(self, x, y, "textures/jumper_front.png")
 
         # Moving states
@@ -17,34 +19,46 @@ class Jumper(GameObject):
         self.isCollision = False
 
         # Move params
-        self.JUMP_DURATION = c.jump_duration
-        self.JUMP_HEIGHT = c.jump_height
-        self.offsetX = offsetX
+        self.offsetX = offset_x
         self.offsetY = 0
 
-        # hidden jump's params
-        self.last_height = self.JUMP_HEIGHT      # chasing previous height to increase it by delta
-        self.func_a_coeff = self.find_a_coeff()  # "a" coeff in a jumping formula (ax^2 + c)
-        self.time = 0                            # equals to "x" in a the jumping formula, changes with time
+        # speed params (vertical)
+        self.jump_time = c.jump_time
+        self.ticks = int(math.ceil(c.framerate * self.jump_time))
+        self.ticks_passed = 0
+        self.c = c.start_speed
+        self.a = self.get_a(self.c, self.jump_time)
+        self.x = -self.jump_time
+        self.JUMP_HEIGHT = self.find_jump_height()
+
+        # Exporting information
         self.last_dy = -1                        # previous delta height
         self.collision_dist = 1000               # this param store dist between jumper and collised platform
 
         # global game jumper's states
         self.game_over = False
 
-        #debug
-        self.prev_centery = self.centery
+    def find_jump_height(self):
+        height = 0
+        c_param = self.c
+        a = self.get_a(self.c, self.jump_time)
+        x = 0
+        ticks_passed = 0
+        while ticks_passed <= self.ticks:
+            height += self.get_current_speed(a, x, c_param)
+            x += 1/c.framerate
+            ticks_passed += 1
+        print("JUMP HEIGHT = ", height)
+        return height
 
-    # Find "a" coeff in a jumping formula ( ax^2 + c )
-    def find_a_coeff(self):
-        return -self.JUMP_HEIGHT / (self.JUMP_DURATION ** 2)
+    # -c/(x1**2)
+    @staticmethod
+    def get_a(c_param, x1):
+        return (-c_param) / (x1**2)
 
-    # Finds the new Y offset via JUMP_HEIGHT and time(x)
-    def offset_fun(self):
-        new_height = self.func_a_coeff * (self.time**2) + self.JUMP_HEIGHT
-        delta = abs(new_height - self.last_height)
-        self.last_height = new_height + 0
-        return delta
+    @staticmethod
+    def get_current_speed(a, x, c_param):
+        return int(a * (x**2) + c_param)
 
     # Handling buttons pressing
     def handle(self, key):
@@ -71,29 +85,33 @@ class Jumper(GameObject):
 
     # Vertical moving(jumping)
     def jumping_move(self):
-        if self.time > 0 and self.jumping_up:
-            self.jumping_up = False
-            self.jumping_down = True
-            print(self.centery)
+        if self.ticks_passed == self.ticks and self.jumping_up:
+            self.jumping_up, self.jumping_down = False, True
+
+            self.ticks_passed = 0
+            self.x = -self.jump_time
+
         if self.isCollision and self.jumping_down:
-            self.time = -self.JUMP_DURATION
-            self.last_height = 0
-            self.jumping_up = True
-            self.jumping_down = False
+            self.jumping_up, self.jumping_down = True, False
             self.collision_dist = 1000
             self.isCollision = False
-            print(self.centery)
+
+            self.ticks_passed = 0
+            self.x = 0
 
         dy = 0
-        self.offsetY = abs(self.offset_fun())
+        self.offsetY = self.get_current_speed(self.a, self.x, self.c)
         if self.jumping_down:
             dy = min(self.offsetY, self.collision_dist)
         elif self.jumping_up:
-            #dy = -min(self.offsetY, self.centery - c.win_height / 2)
-            dy = -self.offsetY
-        self.last_dy = dy
+            dy = -min(self.offsetY, self.centery - c.win_height / 2)
+
+        self.last_dy = dy+0
 
         self.move(0, dy)
+        self.ticks_passed += 1
+
+        self.x += 1/c.framerate
 
     # Moving horizontal
     def horizontal_move(self):
@@ -114,9 +132,6 @@ class Jumper(GameObject):
         # Check lost condition
         if self.top > c.win_height:
             self.jumper_death()
-
-        # Increase time via frame rate
-        self.time += 1/c.framerate
 
         # Moving
         self.jumping_move()

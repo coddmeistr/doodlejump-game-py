@@ -29,4 +29,4 @@ class TextObject:
 
     def __del__(self):
         pass
-        #print("TEXT deleted")
+        # print("TEXT deleted")

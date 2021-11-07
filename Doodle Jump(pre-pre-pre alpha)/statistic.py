@@ -1,7 +1,4 @@
-from MODULES import *
-
 from text_object import TextObject
-from game_object import GameObject
 
 
 class Statistic(TextObject):
@@ -15,4 +12,4 @@ class Statistic(TextObject):
 
     def __del__(self):
         pass
-        #print("stats tracker deleted")
+        # print("stats tracker deleted")

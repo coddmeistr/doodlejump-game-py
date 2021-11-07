@@ -1,11 +1,11 @@
-import colors
+
 from MODULES import *
 
 from rectangle_object import RectObject
 from button_sprite import ButtonSprite
 
 
-def create_scroller(self, x, y, param, handler, bounds, w=200, h=100, rect_color=colors.GRAY40, blocked=[]):
+def create_scroller(self, x, y, param, handler, bounds, w=200, h=100, rect_color=colors.GRAY40, blocked=()):
     scroller = Scroller(x, y, w, h, param, handler, bounds, rect_color, blocked_elems=blocked)
     self.mouse_handlers.append(scroller.slider.handle_mouse_event)
     self.mouse_handlers.append(scroller.rect_back.handle_mouse_event)
@@ -23,7 +23,7 @@ class Scroller:
         self.rect_line = Rectangle(x_l, y_l, w_l, h_l, colors.BLACK)
 
         curr_x = (param / bounds[1])*self.rect_line.width
-        x_s, y_s = x_l+curr_x, y_l - h_l/2 - 3  # Change x here. Also -3 just fixing texture(dont know why it not good)
+        x_s, y_s = x_l+curr_x, y_l - h_l/2 - 3  # Change x here. Also -3 just fixing texture(don't know why it not good)
         self.slider = Slider(x_s, y_s)
         self.slider.rect.x -= self.slider.width/2
 
@@ -51,7 +51,8 @@ class Scroller:
                 dx = 0
 
             self.slider.move(dx, 0)
-            self.param = ((self.slider.centerx - self.rect_line.left)/self.rect_line.width)*(self.bounds[1]-self.bounds[0])
+            self.param = ((self.slider.centerx - self.rect_line.left)/self.rect_line.width) * \
+                         (self.bounds[1]-self.bounds[0])
             self.handler(self.param)
 
     def __del__(self):
@@ -112,4 +113,4 @@ class Rectangle(RectObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted Rectangle")
+        # print("ID ", self.ID, " deleted Rectangle")

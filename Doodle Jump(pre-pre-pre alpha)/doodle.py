@@ -1,8 +1,6 @@
 import pygame.mixer_music
 
-import config
 import jumper
-from MODULES import *
 
 from centralizer import *
 from states_handlers import *
@@ -46,11 +44,11 @@ class Doodle(Game):
         main_menu_buttons = list()
 
         text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 150, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 150, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 350, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 350, w, h, text, padding_x=px, padding_y=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
@@ -60,38 +58,37 @@ class Doodle(Game):
         main_menu_buttons = list()
 
         text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 300, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 300, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "НАЗАД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 400, w, h, text, paddingX=px, paddingY=py))
+        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 400, w, h, text, padding_x=px, padding_y=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
             self.buttons.append(button)
 
     def create_jumper(self):
-        jumper = Jumper(c.win_width / 2, c.win_height / 2 - 15, c.jumper_speedX)
-        self.keydown_handlers[pygame.K_LEFT].append(jumper.handle)
-        self.keydown_handlers[pygame.K_RIGHT].append(jumper.handle)
-        self.keyup_handlers[pygame.K_LEFT].append(jumper.handle)
-        self.keyup_handlers[pygame.K_RIGHT].append(jumper.handle)
-        self.jumper = jumper
+        jumper_obj = Jumper(c.win_width / 2, c.win_height / 2 - 15, c.jumper_speedX)
+        self.keydown_handlers[pygame.K_LEFT].append(jumper_obj.handle)
+        self.keydown_handlers[pygame.K_RIGHT].append(jumper_obj.handle)
+        self.keyup_handlers[pygame.K_LEFT].append(jumper_obj.handle)
+        self.keyup_handlers[pygame.K_RIGHT].append(jumper_obj.handle)
+        self.jumper = jumper_obj
 
         self.objects.append(self.jumper)
 
     def first_platforms_layer(self):
-        max_platform_distance = 0
-        if self.jumper.JUMP_DURATION * c.framerate * self.jumper.offsetX >= c.win_width / 2:
+        if self.jumper.jump_time * c.framerate * self.jumper.offsetX >= c.win_width / 2:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
         else:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
 
         heights = list()
         for _ in range(random.randint(13, 30)):
-            heights.append(random.randint(200, max_platform_distance))
+            heights.append(random.randint(min(200, max_platform_distance - 1), max_platform_distance))
         heights.append(random.randint(c.win_height, c.win_height + 100))
         maximum_height = max(heights)
 
@@ -113,8 +110,7 @@ class Doodle(Game):
         self.last_platform_height = maximum_height
 
     def another_platforms(self):
-        max_platform_distance = 0
-        if self.jumper.JUMP_DURATION * c.framerate * self.jumper.offsetX >= c.win_width / 2:
+        if self.jumper.jump_time * c.framerate * self.jumper.offsetX >= c.win_width / 2:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
         else:
             max_platform_distance = self.jumper.JUMP_HEIGHT + 0
@@ -142,9 +138,9 @@ class Doodle(Game):
         self.last_platform_height = maximum_height
 
     def create_saving_platform(self):
-        p = random_platform(0, 0, [0, 100, 0])
+        p = random_platform(0, 0, [90, 10, 0])
         x = random.randint(0, c.win_width - p.width)
-        y = c.win_height - self.jumper.JUMP_HEIGHT
+        y = c.win_height - random.randint(0, self.jumped_platform_height) - self.jumper.JUMP_HEIGHT
         p.move(x, y)
         self.objects.append(p)
         self.platforms.append(p)
@@ -312,7 +308,7 @@ class Doodle(Game):
             if self.game_state == "Play":
                 try:
                     # No exception if object is movable
-                    if o.top > c.win_height + 10:
+                    if o.top > c.win_height + 10 and not isinstance(o, jumper.Jumper):
                         # it will be deleted at the end of a tick
                         self.objects_to_remove.append(o)
                         # The list of objects collections that you want to delete here (START)

@@ -5,14 +5,15 @@ from text_object import TextObject
 
 
 class ButtonSprite(GameObject):
-    def __init__(self, x, y, text, image, paddingX=0, paddingY=0):
+    def __init__(self, x, y, text, image, padding_x=0, padding_y=0):
         GameObject.__init__(self, x, y, image)
 
         self.state = 'normal'
         self.clicked = False
         self.disabled = False
 
-        self.text = TextObject(x + paddingX, y + paddingY, lambda: text, c.button_text_color, c.font_name, c.font_size)
+        self.text = TextObject(x + padding_x, y + padding_y, lambda: text, c.button_text_color,
+                               c.font_name, c.font_size)
 
     @property
     def back_color(self):
@@ -66,6 +67,4 @@ class ButtonSprite(GameObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted button")
-
-
+        # print("ID ", self.ID, " deleted button")

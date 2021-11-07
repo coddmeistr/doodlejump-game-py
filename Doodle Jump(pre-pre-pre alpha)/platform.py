@@ -11,7 +11,7 @@ class Platform(GameObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted platform")
+        # print("ID ", self.ID, " deleted platform")
 
 
 class MovingPlatform(GameObject):
@@ -56,7 +56,7 @@ class MovingPlatform(GameObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted platform(m)")
+        # print("ID ", self.ID, " deleted platform(m)")
 
 
 class FakePlatform(GameObject):
@@ -98,7 +98,7 @@ class FakePlatform(GameObject):
 
     def __del__(self):
         pass
-        #print("ID ", self.ID, " deleted platform(m)")
+        # print("ID ", self.ID, " deleted platform(m)")
 
 
 def random_platform(x, y, chances_list):
