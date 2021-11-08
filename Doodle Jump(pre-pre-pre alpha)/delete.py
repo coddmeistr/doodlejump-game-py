@@ -1,6 +1,32 @@
 from MODULES import *
 
 
+def delete_objects(self):
+    # delete platforms
+    self.pm.tracking_platform = None
+    for o in self.platforms:
+        del o
+    # delete buttons
+    for o in self.buttons:
+        self.mouse_handlers.remove(o.handle_mouse_event)
+        del o
+    # delete all objects
+    for o in self.objects:
+        del o
+    # to default lists
+    self.objects = []
+    self.platforms = []
+    self.buttons = []
+    # delete all jumper handlers and jumper
+    delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
+    self.jumper = None
+    # delete all statistic trackers
+    delete_trackers([self.points_text, self.max_height_text, self.jumped_platforms_count_text], self.errors_log)
+    self.points_text = None
+    self.jumped_platforms_count_text = None
+    self.max_height_text = None
+
+
 # delete list of trackers
 def delete_trackers(trackers, errors_log):
     try:

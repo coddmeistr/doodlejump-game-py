@@ -1,3 +1,5 @@
+import pygame.image
+
 from MODULES import *
 
 from game_object import GameObject
@@ -5,21 +7,28 @@ from text_object import TextObject
 
 
 class ButtonSprite(GameObject):
-    def __init__(self, x, y, text, image, padding_x=0, padding_y=0):
-        GameObject.__init__(self, x, y, image)
+    def __init__(self, x, y, text, normal, hover, pressed, padding_x=0, padding_y=0):
+        GameObject.__init__(self, x, y, normal)
 
         self.state = 'normal'
         self.clicked = False
         self.disabled = False
 
+        self.states_textures = {"normal": pygame.image.load(normal),
+                                "hover": pygame.image.load(hover),
+                                "pressed": pygame.image.load(pressed)}
+
         self.text = TextObject(x + padding_x, y + padding_y, lambda: text, c.button_text_color,
                                c.font_name, c.font_size)
 
+    def draw(self, surface):
+        surface.blit(self.button_texture, self.rect)
+
     @property
-    def back_color(self):
-        return dict(normal=c.button_normal_back_color,
-                    hover=c.button_hover_back_color,
-                    pressed=c.button_pressed_back_color)[self.state]
+    def button_texture(self):
+        return dict(normal=self.states_textures["normal"],
+                    hover=self.states_textures["hover"],
+                    pressed=self.states_textures["pressed"])[self.state]
 
     def reset(self):
         self.clicked = False

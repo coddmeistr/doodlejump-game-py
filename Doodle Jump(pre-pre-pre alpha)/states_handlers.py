@@ -1,19 +1,25 @@
-import delete
+from delete import *
 import platform
 from music_sounds import *
 from scroller import *
+from itertools import zip_longest
 
 
 # game_state == Menu_main
 def main_menu_handler(self):
     if self.buttons[0].state == "pressed":
-        self.delete_objects()
-        self.last_platform_height = 0
+        delete_objects(self)
+        self.pm.last_platform_height = 0
 
         self.create_jumper()
-        self.create_plato()
-        self.first_platforms_layer()
+        self.pm.jumper = weakref.ref(self.jumper)  # add jumper to pm
         self.create_stats_trackers()
+
+        plato = self.pm.create_plato()
+        platforms = self.pm.first_platforms_layer()
+        for p in plato+platforms:
+            self.objects.append(p)
+            self.platforms.append(p)
 
         self.music.set_music_theme("play")
         self.background.change_background_game("level_1")
@@ -24,7 +30,7 @@ def main_menu_handler(self):
 
     # Settings
     if self.buttons[1].state == "pressed":
-        self.delete_objects()
+        delete_objects(self)
 
         self.create_menu_settings()
 
@@ -43,9 +49,11 @@ def playing_game_handler(self):
         plat = self.jumper.collision_check(self.platforms)
 
         if plat is not None:
-            self.jumped_platform_height = plat.height
-            self.create_saving_platform()
-            print(self.jumper.bottom)
+            self.pm.jumped_platform_height = plat.height
+
+            save_plat = self.pm.create_saving_platform()
+            self.objects.append(save_plat)
+            self.platforms.append(save_plat)
 
             if isinstance(plat, platform.FakePlatform):
                 self.sounds.play_sound("fake_break")
@@ -69,12 +77,15 @@ def playing_game_handler(self):
 
         self.update_points(height_dif, plat_was_jumped)
 
-        if self.tracking_platform.top >= 0:
-            self.another_platforms()
+        if self.pm.tracking_platform.top >= 0:
+            platforms = self.pm.another_platforms()
+            for p in platforms:
+                self.objects.append(p)
+                self.platforms.append(p)
 
         if self.jumper.game_over:
             # delete jumper
-            delete.delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
+            delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
             self.objects.remove(self.jumper)
             self.jumper = None
             # action
@@ -123,7 +134,7 @@ def menu_settings_handler(self):
 
     # Back
     if self.buttons[3].state == "pressed":
-        self.delete_objects()
+        delete_objects(self)
 
         self.create_menu()
 

@@ -63,7 +63,8 @@ class Scroller:
 
 class Slider(ButtonSprite):
     def __init__(self, x, y):
-        ButtonSprite.__init__(self, x, y, "", "textures/polzunok.png")
+        ButtonSprite.__init__(self, x, y, "", "textures/polzunok.png", "textures/polzunok.png",
+                              "textures/polzunok.png")
 
         self.cursor_pos = 0
 
@@ -85,12 +86,6 @@ class Slider(ButtonSprite):
             self.state = 'hover'
         else:
             self.state = "normal"
-
-    @property
-    def back_color(self):
-        return dict(normal=c.slider_normal_back_color,
-                    hover=c.slider_hover_back_color,
-                    pressed=c.slider_pressed_back_color)[self.state]
 
 
 class Rectangle(RectObject):

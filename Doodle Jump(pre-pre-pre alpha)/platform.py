@@ -99,24 +99,3 @@ class FakePlatform(GameObject):
     def __del__(self):
         pass
         # print("ID ", self.ID, " deleted platform(m)")
-
-
-def random_platform(x, y, chances_list):
-    # 1. DEFAULT PLATFORM, 2. MOVING PLATFORM 3. FAKE PLATFORM
-    chances_sum = 0
-    for i in chances_list:
-        chances_sum += i
-    if chances_sum != 100:
-        raise NameError("chances_list EXCEPTION, INVALID CHANCES.")
-    loto = []
-    for i in range(len(chances_list)):
-        for j in range(0, chances_list[i]):
-            loto.append(i)
-    res = loto[random.randint(0, 99)]
-    if res == 0:
-        return Platform(x, y)
-    elif res == 1:
-        speed = 6
-        return MovingPlatform(x, y, speed)
-    elif res == 2:
-        return FakePlatform(x, y)

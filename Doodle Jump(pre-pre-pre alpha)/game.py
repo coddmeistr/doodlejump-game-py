@@ -3,6 +3,7 @@ from music_sounds import *
 from background import *
 import multicoloring
 from collections import defaultdict
+from platform_manager import *
 
 
 class Game:
@@ -24,6 +25,7 @@ class Game:
         pygame.init()
         pygame.font.init()
         self.background = Background(back_image_filename)
+        self.pm = PlatformManager()
         self.font = pygame.font.Font(c.font_name, c.font_size)
         self.surface = pygame.display.set_mode((width, height))
         pygame.display.set_caption(caption)

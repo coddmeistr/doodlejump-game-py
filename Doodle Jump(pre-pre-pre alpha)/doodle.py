@@ -2,12 +2,12 @@ import pygame.mixer_music
 
 import jumper
 
+from game_object import *
 from centralizer import *
 from states_handlers import *
 from delete import *
 from game import Game
 from jumper import Jumper
-from platform import random_platform
 from text_object import TextObject
 from button import Button
 from statistic import Statistic
@@ -27,11 +27,6 @@ class Doodle(Game):
         # Time trackers(for any events)
         self.time = 0  # Main time tracker
         self.game_lost_time = -1
-
-        # platforms creation
-        self.last_platform_height = 0
-        self.jumped_platform_height = 0
-        self.tracking_platform = None
 
         # Game statistic
         self.points_text = None
@@ -63,6 +58,7 @@ class Doodle(Game):
 
         text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, padding_x=px, padding_y=py))
+        print(w, h)
         text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
@@ -84,88 +80,6 @@ class Doodle(Game):
 
         self.objects.append(self.jumper)
 
-    def first_platforms_layer(self):
-        if self.jumper.jump_time * c.framerate * self.jumper.offsetX >= c.win_width / 2:
-            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
-        else:
-            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
-
-        heights = list()
-        for _ in range(random.randint(13, 30)):
-            heights.append(random.randint(min(200, max_platform_distance - 1), max_platform_distance))
-        heights.append(random.randint(c.win_height, c.win_height + 100))
-        maximum_height = max(heights)
-
-        platforms = []
-        heights.sort()
-        for h in heights:
-            p = random_platform(0, 0, [85, 10, 5])
-            x = random.randint(0, c.win_width - p.width)
-            y = c.win_height - h
-            p.move(x, y)
-
-            platforms.append(p)
-
-        self.tracking_platform = platforms[-1]
-        for p in platforms:
-            self.platforms.append(p)
-            self.objects.append(p)
-
-        self.last_platform_height = maximum_height
-
-    def another_platforms(self):
-        if self.jumper.jump_time * c.framerate * self.jumper.offsetX >= c.win_width / 2:
-            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
-        else:
-            max_platform_distance = self.jumper.JUMP_HEIGHT + 0
-
-        heights = list()
-        for _ in range(random.randint(13, 30)):
-            heights.append(random.randint(c.win_height, c.win_height + max_platform_distance))
-        maximum_height = max(heights)
-
-        platforms = []
-        heights.sort()
-        for h in heights:
-            p = random_platform(0, 0, [85, 10, 5])
-            x = random.randint(0, c.win_width - p.width)
-            y = c.win_height - h
-            p.move(x, y)
-
-            platforms.append(p)
-
-        self.tracking_platform = platforms[-1]
-        for p in platforms:
-            self.platforms.append(p)
-            self.objects.append(p)
-
-        self.last_platform_height = maximum_height
-
-    def create_saving_platform(self):
-        p = random_platform(0, 0, [90, 10, 0])
-        x = random.randint(0, c.win_width - p.width)
-        y = c.win_height - random.randint(0, self.jumped_platform_height) - self.jumper.JUMP_HEIGHT
-        p.move(x, y)
-        self.objects.append(p)
-        self.platforms.append(p)
-
-    def create_plato(self):
-        p = random_platform(0, 0, [100, 0, 0])
-        x = 0
-        y = c.win_height - p.height
-        p.move(x, y)
-        self.platforms.append(p)
-        self.objects.append(p)
-        width = p.width
-        for i in range(1, (c.win_width // width) + 1):
-            p = random_platform(0, 0, [100, 0, 0])
-            x = i * p.width
-            y = c.win_height - p.height
-            p.move(x, y)
-
-            self.platforms.append(p)
-            self.objects.append(p)
-
     def create_stats_trackers(self):
         self.max_height_text = Statistic(3, 0, lambda: "height", colors.BLUE, c.font_name, c.font_size_trackers)
         self.points_text = Statistic(3, 30, lambda: "points", colors.BLUE, c.font_name, c.font_size_trackers)
@@ -176,11 +90,9 @@ class Doodle(Game):
         self.objects.append(self.jumped_platforms_count_text)
 
     def game_lost(self):
-        # create basic TextObject to display "GAME LOST!"
-        temp_font = pygame.font.Font(c.font_name, 50)
-        text = "GAME LOST!"
-        game_lost_text = TextObject(c.win_width / 2 - temp_font.size(text)[0] / 2, c.win_height / 2 - 60,
-                                    lambda: text, colors.RED1, c.font_name, 50)
+        # create basic GameObject to display "GAME LOST!"
+        game_lost_text = GameObject(c.win_width / 2 - 75, c.win_height / 2 - 150, "textures/you_lost.png")
+
         # save params
         height = self.max_height_text.param + 0
         points = self.points_text.param + 0
@@ -206,7 +118,7 @@ class Doodle(Game):
                                                       c.win_height / 2 + 55,
                                                       lambda: text3, colors.ORANGE, c.font_name, 30)
         # add to multi coloring
-        self.multicolor.add_object(weakref.ref(game_lost_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
+        #self.multicolor.add_object(weakref.ref(game_lost_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.max_height_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.points_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.jumped_platforms_count_text), left_color=(0, 0, 255),
@@ -222,7 +134,7 @@ class Doodle(Game):
             return
         time_elapsed = self.time - self.game_lost_time
         if time_elapsed >= c.after_lost_pause:
-            self.delete_objects()
+            delete_objects(self)
             self.music.set_music_theme("menu")
             self.background.change_background_menu("default")
             self.create_menu()
@@ -235,7 +147,7 @@ class Doodle(Game):
             for o in self.objects:
                 if not isinstance(o, jumper.Jumper):
                     o.move(0, change)
-                    self.last_platform_height -= change
+                    self.pm.last_platform_height -= change
             return change+0  # returns height change (high)
         return 0
 
@@ -243,31 +155,6 @@ class Doodle(Game):
         self.max_height_text.param += height_delta
         self.jumped_platforms_count_text.param += jumped_plat
         self.points_text.param += height_delta / 10 + jumped_plat * 100
-
-    def delete_objects(self):
-        # delete platforms
-        self.tracking_platform = None
-        for o in self.platforms:
-            del o
-        # delete buttons
-        for o in self.buttons:
-            self.mouse_handlers.remove(o.handle_mouse_event)
-            del o
-        # delete all objects
-        for o in self.objects:
-            del o
-        # to default lists
-        self.objects = []
-        self.platforms = []
-        self.buttons = []
-        # delete all jumper handlers and jumper
-        delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
-        self.jumper = None
-        # delete all statistic trackers
-        delete_trackers([self.points_text, self.max_height_text, self.jumped_platforms_count_text], self.errors_log)
-        self.points_text = None
-        self.jumped_platforms_count_text = None
-        self.max_height_text = None
 
     def clean_garbage(self):
         for o in self.objects_to_remove:
