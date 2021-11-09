@@ -1,5 +1,4 @@
 import pygame.image
-import config as c
 
 
 class Background:

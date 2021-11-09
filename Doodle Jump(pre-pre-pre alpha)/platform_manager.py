@@ -1,5 +1,4 @@
 from platform import *
-import weakref
 
 
 class PlatformManager:

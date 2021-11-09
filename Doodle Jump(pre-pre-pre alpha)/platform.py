@@ -1,9 +1,5 @@
-import weakref
-
 import pygame.image
-
 from MODULES import *
-
 from game_object import GameObject
 
 

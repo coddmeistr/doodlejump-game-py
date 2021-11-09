@@ -117,7 +117,6 @@ class Doodle(Game):
                                                       c.win_height / 2 + 55,
                                                       lambda: text3, colors.ORANGE, c.font_name, 30)
         # add to multi coloring
-        #self.multicolor.add_object(weakref.ref(game_lost_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.max_height_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.points_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
         self.multicolor.add_object(weakref.ref(self.jumped_platforms_count_text), left_color=(0, 0, 255),
