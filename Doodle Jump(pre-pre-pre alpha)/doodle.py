@@ -4,7 +4,6 @@ import jumper
 
 from game_object import *
 from centralizer import *
-from states_handlers import *
 from delete import *
 from game import Game
 from jumper import Jumper
@@ -151,10 +150,14 @@ class Doodle(Game):
             return change+0  # returns height change (high)
         return 0
 
-    def update_points(self, height_delta, jumped_plat):
+    def update_points(self, height_delta, is_jumped):
+        if is_jumped:
+            d = 1
+        else:
+            d = 0
         self.max_height_text.param += height_delta
-        self.jumped_platforms_count_text.param += jumped_plat
-        self.points_text.param += height_delta / 10 + jumped_plat * 100
+        self.jumped_platforms_count_text.param += d
+        self.points_text.param += height_delta / 10 + d * 100
 
     def clean_garbage(self):
         for o in self.objects_to_remove:
@@ -163,16 +166,17 @@ class Doodle(Game):
 
     def update(self):
         self.time += 1 / c.framerate
+
         # STATES HANDLERS HERE
         # STATES HANDLERS HERE
         if self.game_state == "Menu_main":
-            main_menu_handler(self)
+            self.main_menu_handler()
 
         if self.game_state == "Play":
-            playing_game_handler(self)
+            self.playing_game_handler()
 
         if self.game_state == "Menu_settings":
-            menu_settings_handler(self)
+            self.menu_settings_handler()
         # STATES HANDLERS HERE(UP)
         # STATES HANDLERS HERE(UP)
 
@@ -213,6 +217,137 @@ class Doodle(Game):
                     raise RuntimeError("UNKNOWN UNHANDLED ERROR: doodle.py: for o in self.objects:...\n")
         # Cleaning deleted objects from self.objects
         self.clean_garbage()
+
+    # GAME STATES HANDLERS HERE. EVERY GAME STATE IS HANDLING HERE
+    # game_state == Menu_main
+    def main_menu_handler(self):
+        if self.buttons[0].state == "pressed":
+            delete_objects(self)
+            self.pm.last_platform_height = 0
+
+            # Create jumper. Add jumped to Platform Manager and create statistic trackers
+            self.create_jumper()
+            self.pm.jumper = weakref.ref(self.jumper)  # add jumper to pm
+            self.create_stats_trackers()
+            # Create plato and the first layer of platforms
+            plato = self.pm.create_plato()
+            platforms = self.pm.first_platforms_layer()
+            for p in plato + platforms:
+                self.objects.append(p)
+                self.platforms.append(p)
+            # Set play music theme and background
+            self.music.set_music_theme("play")
+            self.background.change_background_game("level_1")
+            # Set the game state to - Play
+            self.game_over = False
+            self.game_state = "Play"
+            return
+
+        # Settings
+        if self.buttons[1].state == "pressed":
+            delete_objects(self)
+
+            self.create_menu_settings()
+
+            self.game_state = "Menu_settings"
+
+        # Exit
+        if self.buttons[2].state == "pressed":
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
+            return
+
+    # game_state == Play
+    def playing_game_handler(self):
+        if not self.game_over:
+            plat = self.jumper.collision_check(self.platforms)
+            is_jumped = False
+            if plat is not None:
+                is_jumped = True
+                # Jumped platform height
+                self.pm.jumped_platform_height = plat.height
+                # Create save platform on the next layer
+                save_plat = self.pm.create_saving_platform()
+                self.objects.append(save_plat)
+                self.platforms.append(save_plat)
+                # Do jump action of a platform
+                plat.action(self)
+
+            # Chasing height diff.
+            height_dif = self.camera_chasing()
+
+            # Background moving
+            self.height_passed += height_dif
+            if self.height_passed >= self.height_to_one_pixel_move:
+                self.background.change_offset(0, 1)
+                self.height_passed -= self.height_to_one_pixel_move
+
+            # Update points
+            self.update_points(height_dif, is_jumped)
+
+            # If tracking platform(highest platform of the last layer) is displayed
+            # Then create a new layer
+            if self.pm.tracking_platform.top >= 0:
+                platforms = self.pm.another_platforms()
+                for p in platforms:
+                    self.objects.append(p)
+                    self.platforms.append(p)
+
+            # If jumper is lost
+            if self.jumper.game_over:
+                # delete jumper
+                delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
+                self.objects.remove(self.jumper)
+                self.jumper = None
+                # action
+                self.game_lost()
+                self.game_lost_time = self.time + 0
+                self.game_over = True
+        else:
+            self.game_lost_pause()
+
+    # game_state == Menu_settings
+    def menu_settings_handler(self):
+        # Sound
+        if self.buttons[0].clicked:
+
+            # volume scroller creation
+            blocked = []
+            for button in self.buttons:
+                button.disable()
+                blocked.append(button)
+            w, h = 200, 100
+            create_scroller(self, self.buttons[0].right + 50, self.buttons[0].top - 25,
+                            self.sounds.volume, self.sounds.change_volume,
+                            [0, 1],
+                            w=w, h=h,
+                            blocked=blocked)
+
+        # Music
+        if self.buttons[1].clicked:
+
+            # volume scroller creation
+            blocked = []
+            for button in self.buttons:
+                button.disable()
+                blocked.append(button)
+            w, h = 200, 100
+            create_scroller(self, self.buttons[1].right + 50, self.buttons[1].top - 25,
+                            self.music.volume, self.music.change_volume,
+                            [0, 1],
+                            w=w, h=h,
+                            blocked=blocked)
+
+        # Difficulty
+        if self.buttons[2].clicked:
+            pass
+
+        # Back
+        if self.buttons[3].state == "pressed":
+            delete_objects(self)
+
+            self.create_menu()
+
+            self.game_state = "Menu_main"
 
 
 def main():

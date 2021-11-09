@@ -10,8 +10,8 @@ framerate = 60
 # Jumper settings
 jumper_speedX = 10
 jumper_speedY = 6
-jump_time = 2       # 1
-start_speed = 20    # 40
+jump_time = 1       # 1
+start_speed = 40    # 40
 
 
 # menu
