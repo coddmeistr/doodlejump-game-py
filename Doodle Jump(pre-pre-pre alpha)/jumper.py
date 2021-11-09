@@ -16,7 +16,12 @@ class Jumper(GameObject):
         self.moving_right = False
         self.jumping_up = False
         self.jumping_down = True
+
+        self.collision_enabled = True
         self.isCollision = False
+
+        self.is_vertical_move = True
+        self.is_horizontal_move = True
 
         # Move params
         self.offsetX = offset_x
@@ -33,10 +38,16 @@ class Jumper(GameObject):
 
         # Exporting information
         self.last_dy = -1                        # previous delta height
+        self.last_dx = -1
         self.collision_dist = 1000               # this param store dist between jumper and collised platform
 
         # global game jumper's states
         self.game_over = False
+
+    def move(self, dx, dy):
+        self.last_dy = dy
+        self.last_dx = dx
+        self.rect = self.rect.move(dx, dy)
 
     def find_jump_height(self):
         height = 0
@@ -70,14 +81,15 @@ class Jumper(GameObject):
     # Check collisions and returns platform if it was
     # Also setting collision_dist variable to the distance to this platform
     def collision_check(self, platforms):
-        for p in platforms:
-            if ((self.left <= p.left < self.right) or
-                (p.left <= self.left and p.right >= self.right) or
-                (self.right >= p.right >= self.left)) and\
-                (p.top >= self.bottom) and\
-                (abs(p.top-self.bottom) <= self.offsetY) and\
-                    self.jumping_down:
-                return p
+        if self.collision_enabled:
+            for p in platforms:
+                if ((self.left <= p.left < self.right) or
+                    (p.left <= self.left and p.right >= self.right) or
+                    (self.right >= p.right >= self.left)) and \
+                        (p.top >= self.bottom) and \
+                        (abs(p.top - self.bottom) <= self.offsetY) and \
+                        self.jumping_down:
+                    return p
         return None
 
     def jumper_death(self):
@@ -106,8 +118,6 @@ class Jumper(GameObject):
         elif self.jumping_up:
             dy = -min(self.offsetY, self.centery - c.win_height / 2)
 
-        self.last_dy = dy+0
-
         self.move(0, dy)
         self.ticks_passed += 1
 
@@ -134,8 +144,10 @@ class Jumper(GameObject):
             self.jumper_death()
 
         # Moving
-        self.jumping_move()
-        self.horizontal_move()
+        if self.is_vertical_move:
+            self.jumping_move()
+        if self.is_horizontal_move:
+            self.horizontal_move()
 
     def __del__(self):
         print("ID ", self.ID, " deleted JUMPER")

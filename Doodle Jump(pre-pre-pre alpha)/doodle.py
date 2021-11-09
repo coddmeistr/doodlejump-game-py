@@ -262,6 +262,9 @@ class Doodle(Game):
             plat = self.jumper.collision_check(self.platforms)
             is_jumped = False
             if plat is not None:
+                # temporary line, it fixes collision bug, not it's ok
+                self.jumper.move(0, plat.top - self.jumper.bottom)
+
                 is_jumped = True
                 # Jumped platform height
                 self.pm.jumped_platform_height = plat.height

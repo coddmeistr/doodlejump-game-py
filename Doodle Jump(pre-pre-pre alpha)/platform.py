@@ -1,3 +1,5 @@
+import weakref
+
 import pygame.image
 
 from MODULES import *
@@ -115,42 +117,107 @@ class FakePlatform(GameObject):
         # print("ID ", self.ID, " deleted platform(m)")
 
 
-class TeleportPlatform(GameObject):
+class AbsorbPlatform(GameObject):
     def __init__(self, x, y):
         GameObject.__init__(self, x, y, "textures/platform_fake.png")
 
-        # DUST FALL ANIMATION
-        self.dust_fall_animation = [pygame.image.load("textures/animation_fake_platform/pyl1.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl2.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl3.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl4.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl5.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl6.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl7.png").convert_alpha()]
-        self.anim_count = 0
-        self.FPS = 60
-        self.ticks_passed = 0
-        self.skip_ticks = int(1/(self.FPS / c.framerate))-1
-        self.is_draw_animation = True
+        # scenario stage of this platform action
+        self.scenario_state = 0
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
-        if self.is_draw_animation:
-            rect = self.rect.copy()
-            rect.y += rect.height - 30
-            surface.blit(self.dust_fall_animation[self.anim_count // 8], rect)
+        # time var
+        self.time = 0
 
-            if self.anim_count + 1 > 49 and self.ticks_passed == self.skip_ticks:
-                self.anim_count = 0
-                self.ticks_passed = 0
-            elif self.ticks_passed == self.skip_ticks:
-                self.anim_count += 1
-                self.ticks_passed = 0
-            else:
-                self.ticks_passed += 1
+        # jumped jumper
+        self.victim = None
 
-        elif self.is_draw_animation:
-            self.ticks_passed += 1
+        # fake jump params
+        self.failed_speedY = 5
+        self.failed_jump_height = 10
+        self.failed_passed_height = 0
+
+        # try jump params
+        self.try_speedY = 10
+        self.try_jump_height = 30
+        self.try_passed_height = 0
+        self.button_pressed = False
+
+        self.time_to_death = 4.5
+        self.clicks_to_escape = 10
+        self.current_clicks = 0
+
+    def action(self, base):
+        base.jumper.collision_dist = abs(self.top - base.jumper.bottom)
+        base.jumper.isCollision = True
+        base.sounds.play_sound("jump")
+
+        self.time = 0
+        self.current_clicks = 0
+
+        # Block jumper's move and give it's control to this platform
+        self.victim = weakref.ref(base.jumper)
+        self.victim().is_vertical_move = False
+        self.victim().is_horizontal_move = False
+        self.victim().collision_enabled = False
+
+        # Handler for escape button
+        base.keydown_handlers[pygame.K_BACKSPACE].append(self.handle_button_event)
+
+        # State
+        self.scenario_state = 1
+
+    def failed_jump_move(self):
+        if self.failed_passed_height == self.failed_jump_height:
+            self.failed_passed_height = 0
+            self.scenario_state = 2
+            return
+        dy = -min(self.failed_speedY, self.failed_jump_height-self.failed_passed_height)
+        self.victim().move(0, dy)
+        self.failed_passed_height += abs(dy)
+
+    def try_jump_move(self):
+        if self.try_passed_height == self.try_jump_height:
+            self.current_clicks += 1
+            if self.current_clicks == self.clicks_to_escape:
+                self.return_control()
+                self.end_action_scene()
+                self.try_passed_height = 0
+                self.button_pressed = False
+                return
+            self.victim().move(0, self.try_passed_height)
+            self.try_passed_height = 0
+            self.button_pressed = False
+            return
+        dy = -min(self.try_speedY, self.try_jump_height - self.try_passed_height)
+        self.victim().move(0, dy)
+        self.try_passed_height += abs(dy)
+
+    def handle_button_event(self, key):
+        if self.scenario_state == 2:
+            if key == pygame.K_BACKSPACE:
+                self.button_pressed = True
+
+    def return_control(self):
+        self.victim().is_vertical_move = True
+        self.victim().is_horizontal_move = True
+        self.victim().collision_enabled = True
+
+    def end_action_scene(self):
+        self.victim = None
+        self.scenario_state = 0
+
+    def time_track(self):
+        self.time += 1/c.framerate
+        if self.time >= self.time_to_death:
+            self.scenario_state = 0
+            self.victim().game_over = True
+
+    def update(self):
+        if self.scenario_state == 1:
+            self.failed_jump_move()
+        elif self.scenario_state == 2:
+            self.time_track()
+            if self.button_pressed:
+                self.try_jump_move()
 
     def __del__(self):
         pass

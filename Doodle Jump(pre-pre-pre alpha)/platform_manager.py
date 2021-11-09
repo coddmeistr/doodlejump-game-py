@@ -24,7 +24,7 @@ class PlatformManager:
         platforms = []
         heights.sort()
         for h in heights:
-            p = self.random_platform(0, 0, [85, 10, 5])
+            p = self.random_platform(0, 0, [100, 0, 0, 0])
             x = random.randint(0, c.win_width - p.width)
             y = c.win_height - h
             p.move(x, y)
@@ -49,7 +49,7 @@ class PlatformManager:
         platforms = []
         heights.sort()
         for h in heights:
-            p = self.random_platform(0, 0, [85, 10, 5])
+            p = self.random_platform(0, 0, [0, 0, 0, 100])
             x = random.randint(0, c.win_width - p.width)
             y = c.win_height - h
             p.move(x, y)
@@ -61,7 +61,7 @@ class PlatformManager:
         return platforms
 
     def create_saving_platform(self):
-        p = self.random_platform(0, 0, [90, 10, 0])
+        p = self.random_platform(0, 0, [0, 0, 0, 100])
         x = random.randint(0, c.win_width - p.width)
         y = c.win_height - random.randint(0, self.jumped_platform_height) - self.jumper().JUMP_HEIGHT
         p.move(x, y)
@@ -69,7 +69,7 @@ class PlatformManager:
 
     def create_plato(self):
         platforms = []
-        p = self.random_platform(0, 0, [100, 0, 0])
+        p = self.random_platform(0, 0, [100, 0, 0, 0])
         x = 0
         y = c.win_height - p.height
         p.move(x, y)
@@ -78,7 +78,7 @@ class PlatformManager:
         platforms.append(p)
 
         for i in range(1, (c.win_width // width) + 1):
-            p = self.random_platform(0, 0, [100, 0, 0])
+            p = self.random_platform(0, 0, [100, 0, 0, 0])
             x = i * p.width
             y = c.win_height - p.height
             p.move(x, y)
@@ -107,3 +107,5 @@ class PlatformManager:
             return MovingPlatform(x, y, speed)
         elif res == 2:
             return FakePlatform(x, y)
+        elif res == 3:
+            return AbsorbPlatform(x, y)

@@ -63,7 +63,7 @@ class Game:
                 for handler in self.keydown_handlers[event.key]:
                     handler(event.key)
             elif event.type == pygame.KEYUP:
-                for handler in self.keydown_handlers[event.key]:
+                for handler in self.keyup_handlers[event.key]:
                     handler(event.key)
             elif event.type in (pygame.MOUSEBUTTONDOWN,
                                 pygame.MOUSEBUTTONUP,
