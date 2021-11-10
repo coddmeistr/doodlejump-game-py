@@ -69,8 +69,8 @@ class Doodle(Game):
             self.objects.append(button)
             self.buttons.append(button)
 
-    def create_jumper(self):
-        jumper_obj = Jumper(c.win_width / 2, c.win_height / 2 - 15, c.jumper_speedX)
+    def create_jumper(self, x, y):
+        jumper_obj = Jumper(x, y, c.jumper_speedX)
         self.keydown_handlers[pygame.K_LEFT].append(jumper_obj.handle)
         self.keydown_handlers[pygame.K_RIGHT].append(jumper_obj.handle)
         self.keyup_handlers[pygame.K_LEFT].append(jumper_obj.handle)
@@ -225,7 +225,7 @@ class Doodle(Game):
             self.pm.last_platform_height = 0
 
             # Create jumper. Add jumped to Platform Manager and create statistic trackers
-            self.create_jumper()
+            self.create_jumper(c.win_width / 2, c.win_height / 2 - 15)
             self.pm.jumper = weakref.ref(self.jumper)  # add jumper to pm
             self.create_stats_trackers()
             # Create plato and the first layer of platforms

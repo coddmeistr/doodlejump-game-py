@@ -27,6 +27,14 @@ def delete_objects(self):
     self.max_height_text = None
 
 
+def delete_platforms(self):
+    self.pm.tracking_platform = None
+    for o in self.platforms:
+        self.objects.remove(o)
+        del o
+    self.platforms = []
+
+
 # delete list of trackers
 def delete_trackers(trackers, errors_log):
     try:

@@ -138,6 +138,16 @@ class Jumper(GameObject):
         if self.centerx >= c.win_width:
             self.move(-c.win_width, 0)
 
+    # randomize move condition
+    def full_randomize_move_state(self):
+        self.jumping_up = True
+        self.jumping_down = False
+        x = random.random()
+        self.x = x
+        self.ticks_passed = int(math.ceil(c.framerate * self.x))
+        self.rect.x = random.randint(0, c.win_width-20)
+        self.rect.y = random.randint(c.win_height / 2, c.win_height - 20)
+
     def update(self):
         # Check lost condition
         if self.top > c.win_height:

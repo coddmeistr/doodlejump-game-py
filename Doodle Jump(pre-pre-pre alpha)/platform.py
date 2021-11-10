@@ -1,6 +1,7 @@
 import pygame.image
 from MODULES import *
 from game_object import GameObject
+from delete import *
 
 
 class Platform(GameObject):
@@ -87,6 +88,7 @@ class FakePlatform(GameObject):
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
         if self.is_draw_animation:
             rect = self.rect.copy()
             rect.y += rect.height - 30
@@ -214,6 +216,63 @@ class AbsorbPlatform(GameObject):
             self.time_track()
             if self.button_pressed:
                 self.try_jump_move()
+
+    def __del__(self):
+        pass
+        # print("ID ", self.ID, " deleted platform(m)")
+
+
+class SteinsPlatform(GameObject):
+    def __init__(self, x, y):
+        GameObject.__init__(self, x, y, "textures/platform_runic.png")
+
+        self.scenario = 0
+
+        self.base = None
+
+    def action(self, base):
+        self.base = base
+
+        self.base.jumper.isCollision = False
+
+        self.base.movie.start_movie("steins_gate")
+
+        x = random.randint(0, c.win_width-20)
+        y = random.randint(c.win_height / 2, c.win_height - 40)
+        self.base.jumper.x = x
+        self.base.jumper.y = y
+        self.steal_control()
+
+        self.base.objects.remove(self)
+        self.base.platforms.remove(self)
+        delete_platforms(self.base)
+        self.base.objects.append(self)
+        self.base.platforms.append(self)
+
+        platforms = self.base.pm.first_platforms_layer()
+        for p in platforms:
+            self.base.objects.append(p)
+            self.base.platforms.append(p)
+
+        self.scenario = 1
+
+    def return_control(self):
+        self.base.jumper.is_vertical_move = True
+        self.base.jumper.is_horizontal_move = True
+        self.base.jumper.collision_enabled = True
+
+    def steal_control(self):
+        self.base.jumper.is_vertical_move = False
+        self.base.jumper.is_horizontal_move = False
+        self.base.jumper.collision_enabled = False
+
+    def update(self):
+        if self.scenario == 1:
+            if not self.base.movie.play_movie:
+                self.base.objects.remove(self)
+                self.base.platforms.remove(self)
+                self.base.jumper.full_randomize_move_state()
+                self.return_control()
 
     def __del__(self):
         pass

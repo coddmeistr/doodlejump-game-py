@@ -4,6 +4,7 @@ from background import *
 import multicoloring
 from collections import defaultdict
 from platform_manager import *
+from movie import *
 
 
 class Game:
@@ -44,6 +45,8 @@ class Game:
         self.music = Music()
         self.sounds = Sounds()
         self.load_settings()
+
+        self.movie = Movie(self.music)
 
     def update(self):
         pass
@@ -94,6 +97,8 @@ class Game:
             self.handle_events()
             self.update()
             self.draw()
+
+            self.movie.draw(self.surface)
 
             pygame.display.update()
             self.clock.tick(self.frame_rate)

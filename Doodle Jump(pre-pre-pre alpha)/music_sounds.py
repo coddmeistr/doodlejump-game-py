@@ -5,6 +5,7 @@ from MODULES import *
 
 class Music:
     def __init__(self):
+        self.tag = ""
         # Music themes dict
         self.music_themes = dict()
         self.volume = 0
@@ -12,10 +13,12 @@ class Music:
         # Add music themes here
         self.music_themes["menu"] = "music/background_lane.mp3"
         self.music_themes["play"] = "music/background_steins_gate.mp3"
+        self.music_themes["steins_gate_audio"] = "movies/reading_steiner_audio/reading_steiner_audio.mp3"
 
-    def set_music_theme(self, tag):
+    def set_music_theme(self, tag, param=-1):
+        self.tag = tag
         pygame.mixer.music.load(self.music_themes[tag])
-        pygame.mixer.music.play(-1)
+        pygame.mixer.music.play(param)
 
     def change_volume(self, new):
         pygame.mixer_music.set_volume(new)
