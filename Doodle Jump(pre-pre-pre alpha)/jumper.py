@@ -146,7 +146,7 @@ class Jumper(GameObject):
         self.x = x
         self.ticks_passed = int(math.ceil(c.framerate * self.x))
         self.rect.x = random.randint(0, c.win_width-20)
-        self.rect.y = random.randint(c.win_height / 2, c.win_height - 20)
+        self.rect.y = random.randint(c.win_height / 2, c.win_height / 2 + 100)
 
     def update(self):
         # Check lost condition

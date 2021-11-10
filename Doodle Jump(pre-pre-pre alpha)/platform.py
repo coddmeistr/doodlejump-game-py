@@ -1,5 +1,4 @@
 import pygame.image
-from MODULES import *
 from game_object import GameObject
 from delete import *
 
@@ -207,7 +206,7 @@ class AbsorbPlatform(GameObject):
         self.time += 1/c.framerate
         if self.time >= self.time_to_death:
             self.scenario_state = 0
-            self.victim().game_over = True
+            self.victim().jumper_death()
 
     def update(self):
         if self.scenario_state == 1:
@@ -237,10 +236,6 @@ class SteinsPlatform(GameObject):
 
         self.base.movie.start_movie("steins_gate")
 
-        x = random.randint(0, c.win_width-20)
-        y = random.randint(c.win_height / 2, c.win_height - 40)
-        self.base.jumper.x = x
-        self.base.jumper.y = y
         self.steal_control()
 
         self.base.objects.remove(self)

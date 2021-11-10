@@ -48,7 +48,7 @@ class PlatformManager:
         platforms = []
         heights.sort()
         for h in heights:
-            p = self.random_platform(0, 0, [0, 0, 0, 0, 100])
+            p = self.random_platform(0, 0, [0, 0, 0, 100, 0])
             x = random.randint(0, c.win_width - p.width)
             y = c.win_height - h
             p.move(x, y)
