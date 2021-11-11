@@ -14,6 +14,8 @@ class GameObject(pygame.sprite.Sprite):
         self.rect.y = y
         self.speed = speed
 
+        self.animations = []
+
         self.ID = globals().get("ID")
         # print("ID: ", self.ID)
         globals()["ID"] += 1
@@ -54,8 +56,15 @@ class GameObject(pygame.sprite.Sprite):
     def centery(self):
         return self.rect.centery
 
+    def add_anim(self, anim):
+        self.animations.append(anim)
+
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
+        for animation in self.animations:
+            if animation is not None:
+                animation().draw(surface)
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)

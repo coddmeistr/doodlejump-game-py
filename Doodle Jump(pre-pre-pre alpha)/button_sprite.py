@@ -24,6 +24,10 @@ class ButtonSprite(GameObject):
     def draw(self, surface):
         surface.blit(self.button_texture, self.rect)
 
+        for animation in self.animations:
+            if animation is not None:
+                animation().draw(surface)
+
     @property
     def button_texture(self):
         return dict(normal=self.states_textures["normal"],

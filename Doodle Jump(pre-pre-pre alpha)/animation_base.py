@@ -8,7 +8,8 @@ from animation import Animation
 
 class AnimationBase:
     def __init__(self):
-        self.animations = {"fake_platform_dust_fall": self.load_animation("textures/animation_fake_platform")
+        self.animations = {"dust_fall": self.load_animation("animations/dust_fall"),
+                           "rotating_gear": self.load_animation("animations/rotating_gear")
                       }
 
         self.on_draw_animations = []

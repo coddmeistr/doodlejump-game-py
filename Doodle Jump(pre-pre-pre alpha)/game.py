@@ -5,6 +5,7 @@ import multicoloring
 from collections import defaultdict
 from platform_manager import *
 from movie import *
+from pygame import cursors
 
 
 class Game:
@@ -49,6 +50,10 @@ class Game:
         self.movie = Movie(self.music)
         self.anims = AnimationBase()
 
+        pygame.mouse.set_visible(False)
+        self.cursor_texture = pygame.image.load("textures/cursor/cursor.png")
+        self.is_hide_cursor = False
+
     def update(self):
         pass
 
@@ -91,6 +96,12 @@ class Game:
         file_music.close()
         file_sounds.close()
 
+    def hide_cursor(self):
+        self.is_hide_cursor = True
+
+    def show_cursor(self):
+        self.is_hide_cursor = False
+
     def run(self):
         while not self.game_ending:
             self.background.draw(self.surface)
@@ -101,6 +112,11 @@ class Game:
 
             self.anims.update()
             self.movie.draw(self.surface)
+
+            if not self.is_hide_cursor:
+                cursor_rect = pygame.mouse.get_pos()  # update position
+                cursor_rect = tuple([cursor_rect[0]-14, cursor_rect[1]])
+                self.surface.blit(self.cursor_texture, cursor_rect)
 
             pygame.display.update()
             self.clock.tick(self.frame_rate)

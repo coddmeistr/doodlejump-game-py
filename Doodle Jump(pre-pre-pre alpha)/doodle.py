@@ -44,6 +44,15 @@ class Doodle(Game):
         text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
         main_menu_buttons.append(ButtonSprite(c.win_width / 2 - w / 2, 150, text,
             "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png"))
+        main_menu_buttons[0].add_anim(self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(50, 10)))
+        main_menu_buttons[0].add_anim(
+            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(100, 10), frame_rate=60))
+        main_menu_buttons[0].add_anim(
+            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(50, 100), frame_rate= 30))
+        main_menu_buttons[0].add_anim(
+            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(200, 200), frame_rate=5))
+
+
         text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
@@ -134,6 +143,7 @@ class Doodle(Game):
         time_elapsed = self.time - self.game_lost_time
         if time_elapsed >= c.after_lost_pause:
             delete_objects(self)
+            self.show_cursor()
             self.music.set_music_theme("menu")
             self.background.change_background_menu("default")
             self.create_menu()
@@ -225,6 +235,8 @@ class Doodle(Game):
             delete_objects(self)
             self.pm.last_platform_height = 0
 
+            # hide cursor
+            self.hide_cursor()
             # Create jumper. Add jumped to Platform Manager and create statistic trackers
             self.create_jumper(c.win_width / 2, c.win_height / 2 - 15)
             self.pm.jumper = weakref.ref(self.jumper)  # add jumper to pm

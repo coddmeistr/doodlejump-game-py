@@ -75,7 +75,7 @@ class FakePlatform(GameObject):
         GameObject.__init__(self, x, y, "textures/platform_fake.png")
         self.base = base
 
-        self.animation = base.anims.create_animation("fake_platform_dust_fall", weakref.ref(self), frame_rate=10,
+        self.animation = base.anims.create_animation("dust_fall", weakref.ref(self), frame_rate=10,
                                                      offset=(0, 20))
 
     def draw(self, surface):
