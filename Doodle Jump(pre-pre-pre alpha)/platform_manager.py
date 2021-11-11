@@ -2,7 +2,9 @@ from platform import *
 
 
 class PlatformManager:
-    def __init__(self):
+    def __init__(self, base):
+        self.base = base
+
         self.last_platform_height = 0
         self.jumped_platform_height = 0
         self.tracking_platform = None
@@ -48,10 +50,9 @@ class PlatformManager:
         platforms = []
         heights.sort()
         for h in heights:
-            p = self.random_platform(0, 0, [0, 0, 0, 100, 0])
-            x = random.randint(0, c.win_width - p.width)
+            x = random.randint(0, c.win_width)
             y = c.win_height - h
-            p.move(x, y)
+            p = self.random_platform(x, y, [0, 0, 100, 0, 0])
 
             platforms.append(p)
 
@@ -86,8 +87,7 @@ class PlatformManager:
 
         return platforms
 
-    @staticmethod
-    def random_platform(x, y, chances_list):
+    def random_platform(self, x, y, chances_list):
         # 1. DEFAULT PLATFORM, 2. MOVING PLATFORM 3. FAKE PLATFORM
         chances_sum = 0
         for i in chances_list:
@@ -100,13 +100,13 @@ class PlatformManager:
                 loto.append(i)
         res = loto[random.randint(0, 99)]
         if res == 0:
-            return Platform(x, y)
+            return Platform(x, y, self.base)
         elif res == 1:
             speed = 6
-            return MovingPlatform(x, y, speed)
+            return MovingPlatform(x, y, speed, self.base)
         elif res == 2:
-            return FakePlatform(x, y)
+            return FakePlatform(x, y, self.base)
         elif res == 3:
-            return AbsorbPlatform(x, y)
+            return AbsorbPlatform(x, y, self.base)
         elif res == 4:
-            return SteinsPlatform(x, y)
+            return SteinsPlatform(x, y, self.base)

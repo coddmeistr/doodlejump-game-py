@@ -30,7 +30,7 @@ slider_pressed_back_color = colors.RED1
 
 
 # delays(seconds)
-after_lost_pause = 5
+after_lost_pause = 4
 
 
 # platforms

@@ -42,7 +42,8 @@ class Doodle(Game):
         main_menu_buttons = list()
 
         text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 150, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(ButtonSprite(c.win_width / 2 - w / 2, 150, text,
+            "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png"))
         text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
         main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
@@ -272,7 +273,7 @@ class Doodle(Game):
                 self.objects.append(save_plat)
                 self.platforms.append(save_plat)
                 # Do jump action of a platform
-                plat.action(self)
+                plat.action()
 
             # Chasing height diff.
             height_dif = self.camera_chasing()

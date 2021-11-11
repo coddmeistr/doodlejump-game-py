@@ -26,7 +26,7 @@ class Game:
         pygame.init()
         pygame.font.init()
         self.background = Background(back_image_filename)
-        self.pm = PlatformManager()
+        self.pm = PlatformManager(self)
         self.font = pygame.font.Font(c.font_name, c.font_size)
         self.surface = pygame.display.set_mode((width, height))
         pygame.display.set_caption(caption)
@@ -47,6 +47,7 @@ class Game:
         self.load_settings()
 
         self.movie = Movie(self.music)
+        self.anims = AnimationBase()
 
     def update(self):
         pass
@@ -98,6 +99,7 @@ class Game:
             self.update()
             self.draw()
 
+            self.anims.update()
             self.movie.draw(self.surface)
 
             pygame.display.update()

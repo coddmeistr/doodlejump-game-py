@@ -21,7 +21,8 @@ class Movie:
         self.skip_ticks = int(1 / (self.FPS / c.framerate)) - 1
         self.play_movie = False
 
-    def load_movie(self, storage):
+    @staticmethod
+    def load_movie(storage):
         movie = []
         for subdir, dirs, files in os.walk(storage):
             for file in files:

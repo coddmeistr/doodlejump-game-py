@@ -1,16 +1,18 @@
 import pygame.image
 from game_object import GameObject
 from delete import *
+from animation_base import *
 
 
 class Platform(GameObject):
-    def __init__(self, x, y):
+    def __init__(self, x, y, base):
         GameObject.__init__(self, x, y, "textures/platform_basic.png")
+        self.base = base
 
-    def action(self, base):
-        base.jumper.collision_dist = abs(self.top - base.jumper.bottom)
-        base.jumper.isCollision = True
-        base.sounds.play_sound("jump")
+    def action(self):
+        self.base.jumper.collision_dist = abs(self.top - self.base.jumper.bottom)
+        self.base.jumper.isCollision = True
+        self.base.sounds.play_sound("jump")
 
     def __del__(self):
         pass
@@ -18,8 +20,9 @@ class Platform(GameObject):
 
 
 class MovingPlatform(GameObject):
-    def __init__(self, x, y, speed):
+    def __init__(self, x, y, speed, base):
         GameObject.__init__(self, x, y, "textures/platform_runic.png")
+        self.base = base
 
         self.time = 0
 
@@ -31,10 +34,10 @@ class MovingPlatform(GameObject):
         self.DUR = c.duration_moving_platforms()
         self.speed = speed
 
-    def action(self, base):
-        base.jumper.collision_dist = abs(self.top - base.jumper.bottom)
-        base.jumper.isCollision = True
-        base.sounds.play_sound("jump")
+    def action(self):
+        self.base.jumper.collision_dist = abs(self.top - self.base.jumper.bottom)
+        self.base.jumper.isCollision = True
+        self.base.sounds.play_sound("jump")
 
     def offset_fun(self):
         return self.speed
@@ -68,55 +71,30 @@ class MovingPlatform(GameObject):
 
 
 class FakePlatform(GameObject):
-    def __init__(self, x, y):
+    def __init__(self, x, y, base):
         GameObject.__init__(self, x, y, "textures/platform_fake.png")
+        self.base = base
 
-        # DUST FALL ANIMATION
-        self.dust_fall_animation = [pygame.image.load("textures/animation_fake_platform/pyl1.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl2.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl3.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl4.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl5.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl6.png").convert_alpha(),
-                                    pygame.image.load("textures/animation_fake_platform/pyl7.png").convert_alpha()]
-        self.anim_count = 0
-        self.FPS = 60
-        self.ticks_passed = 0
-        self.skip_ticks = int(1/(self.FPS / c.framerate))-1
-        self.is_draw_animation = True
+        self.animation = base.anims.create_animation("fake_platform_dust_fall", weakref.ref(self), frame_rate=10,
+                                                     offset=(0, 20))
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+        self.animation().draw(surface)
 
-        if self.is_draw_animation:
-            rect = self.rect.copy()
-            rect.y += rect.height - 30
-            surface.blit(self.dust_fall_animation[self.anim_count // 8], rect)
-
-            if self.anim_count + 1 > 49 and self.ticks_passed == self.skip_ticks:
-                self.anim_count = 0
-                self.ticks_passed = 0
-            elif self.ticks_passed == self.skip_ticks:
-                self.anim_count += 1
-                self.ticks_passed = 0
-            else:
-                self.ticks_passed += 1
-
-        elif self.is_draw_animation:
-            self.ticks_passed += 1
-
-    def action(self, base):
-        base.sounds.play_sound("fake_break")
+    def action(self):
+        self.base.sounds.play_sound("fake_break")
         self.move(0, c.win_height)
 
     def __del__(self):
         pass
-        # print("ID ", self.ID, " deleted platform(m)")
+        #print("ID ", self.ID, " deleted platform(F)")
 
 
 class AbsorbPlatform(GameObject):
-    def __init__(self, x, y):
+    def __init__(self, x, y, base):
         GameObject.__init__(self, x, y, "textures/platform_fake.png")
+        self.base = base
 
         # scenario stage of this platform action
         self.scenario_state = 0
@@ -142,22 +120,22 @@ class AbsorbPlatform(GameObject):
         self.clicks_to_escape = 10
         self.current_clicks = 0
 
-    def action(self, base):
-        base.jumper.collision_dist = abs(self.top - base.jumper.bottom)
-        base.jumper.isCollision = True
-        base.sounds.play_sound("jump")
+    def action(self):
+        self.base.jumper.collision_dist = abs(self.top - self.base.jumper.bottom)
+        self.base.jumper.isCollision = True
+        self.base.sounds.play_sound("jump")
 
         self.time = 0
         self.current_clicks = 0
 
         # Block jumper's move and give it's control to this platform
-        self.victim = weakref.ref(base.jumper)
+        self.victim = weakref.ref(self.base.jumper)
         self.victim().is_vertical_move = False
         self.victim().is_horizontal_move = False
         self.victim().collision_enabled = False
 
         # Handler for escape button
-        base.keydown_handlers[pygame.K_BACKSPACE].append(self.handle_button_event)
+        self.base.keydown_handlers[pygame.K_UP].append(self.handle_button_event)
 
         # State
         self.scenario_state = 1
@@ -190,7 +168,7 @@ class AbsorbPlatform(GameObject):
 
     def handle_button_event(self, key):
         if self.scenario_state == 2:
-            if key == pygame.K_BACKSPACE:
+            if key == pygame.K_UP:
                 self.button_pressed = True
 
     def return_control(self):
@@ -222,21 +200,19 @@ class AbsorbPlatform(GameObject):
 
 
 class SteinsPlatform(GameObject):
-    def __init__(self, x, y):
+    def __init__(self, x, y, base):
         GameObject.__init__(self, x, y, "textures/platform_runic.png")
 
         self.scenario = 0
 
-        self.base = None
-
-    def action(self, base):
         self.base = base
 
+    def action(self):
         self.base.jumper.isCollision = False
 
         self.base.movie.start_movie("steins_gate")
 
-        self.steal_control()
+        self.base.jumper.steal_control()
 
         self.base.objects.remove(self)
         self.base.platforms.remove(self)
@@ -251,23 +227,13 @@ class SteinsPlatform(GameObject):
 
         self.scenario = 1
 
-    def return_control(self):
-        self.base.jumper.is_vertical_move = True
-        self.base.jumper.is_horizontal_move = True
-        self.base.jumper.collision_enabled = True
-
-    def steal_control(self):
-        self.base.jumper.is_vertical_move = False
-        self.base.jumper.is_horizontal_move = False
-        self.base.jumper.collision_enabled = False
-
     def update(self):
         if self.scenario == 1:
             if not self.base.movie.play_movie:
                 self.base.objects.remove(self)
                 self.base.platforms.remove(self)
                 self.base.jumper.full_randomize_move_state()
-                self.return_control()
+                self.base.jumper.return_control()
 
     def __del__(self):
         pass

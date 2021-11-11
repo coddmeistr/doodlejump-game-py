@@ -138,6 +138,16 @@ class Jumper(GameObject):
         if self.centerx >= c.win_width:
             self.move(-c.win_width, 0)
 
+    def return_control(self):
+        self.is_vertical_move = True
+        self.is_horizontal_move = True
+        self.collision_enabled = True
+
+    def steal_control(self):
+        self.is_vertical_move = False
+        self.is_horizontal_move = False
+        self.collision_enabled = False
+
     # randomize move condition
     def full_randomize_move_state(self):
         self.jumping_up = True
