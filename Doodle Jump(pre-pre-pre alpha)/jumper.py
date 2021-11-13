@@ -8,8 +8,9 @@ from game_object import GameObject
 
 
 class Jumper(GameObject):
-    def __init__(self, x=0, y=0, offset_x=0):
-        GameObject.__init__(self, x, y, "textures/jumper_front.png")
+    def __init__(self, x, y, image, base, offset_x=0):
+        GameObject.__init__(self, x, y, image)
+        self.base = base
 
         # Moving states
         self.moving_left = False
@@ -97,6 +98,8 @@ class Jumper(GameObject):
 
     # Vertical moving(jumping)
     def jumping_move(self):
+        wnd_h = self.base.resolution.wnd_h
+
         if self.ticks_passed == self.ticks and self.jumping_up:
             self.jumping_up, self.jumping_down = False, True
 
@@ -116,7 +119,7 @@ class Jumper(GameObject):
         if self.jumping_down:
             dy = min(self.offsetY, self.collision_dist)
         elif self.jumping_up:
-            dy = -min(self.offsetY, self.centery - c.win_height / 2)
+            dy = -min(self.offsetY, self.centery - wnd_h / 2)
 
         self.move(0, dy)
         self.ticks_passed += 1
@@ -125,6 +128,8 @@ class Jumper(GameObject):
 
     # Moving horizontal
     def horizontal_move(self):
+        wnd_w = self.base.resolution.wnd_w
+
         if self.moving_left:
             dx = -self.offsetX
         elif self.moving_right:
@@ -134,9 +139,9 @@ class Jumper(GameObject):
 
         self.move(dx, 0)
         if self.centerx <= 0:
-            self.move(c.win_width, 0)
-        if self.centerx >= c.win_width:
-            self.move(-c.win_width, 0)
+            self.move(wnd_w, 0)
+        if self.centerx >= wnd_w:
+            self.move(-wnd_w, 0)
 
     def return_control(self):
         self.is_vertical_move = True
@@ -150,17 +155,21 @@ class Jumper(GameObject):
 
     # randomize move condition
     def full_randomize_move_state(self):
+        wnd_w = self.base.resolution.wnd_w
+        wnd_h = self.base.resolution.wnd_h
+
         self.jumping_up = True
         self.jumping_down = False
         x = random.random()
         self.x = x
         self.ticks_passed = int(math.ceil(c.framerate * self.x))
-        self.rect.x = random.randint(0, c.win_width-20)
-        self.rect.y = random.randint(c.win_height / 2, c.win_height / 2 + 100)
+        self.rect.x = random.randint(0, wnd_w-20)
+        self.rect.y = random.randint(wnd_h / 2, wnd_h / 2 + 100)
 
     def update(self):
+        wnd_h = self.base.resolution.wnd_h
         # Check lost condition
-        if self.top > c.win_height:
+        if self.top > wnd_h:
             self.jumper_death()
 
         # Moving

@@ -1,10 +1,13 @@
 import pygame.image
+import config as c
 
 
 class Background:
-    def __init__(self, image):
+    def __init__(self, image, base):
+        self.base = base
+
         self.current_background = pygame.image.load(image)
-        self.tag = "*export*"
+        self.tag = "default"
         self.offset = (0, 0)
 
         self.menu_backgrounds = {"default": pygame.image.load("images/background.jpg")
@@ -15,6 +18,9 @@ class Background:
         self.levels_backs = {"level_1": pygame.image.load("images/levels_backs/level_1_back.jpg")
                         }
         self.levels_backs_offsets = {"level_1": (0, -200)}
+
+        self.backs_res = {"level_1": c.s_level1_back,
+                          "default": c.s_default_back}
 
     def change_background_filename(self, image):
         self.current_background = pygame.image.load(image)
@@ -43,5 +49,7 @@ class Background:
         self.offset = tuple([offset[0], offset[1]])
 
     def draw(self, surface):
-        surface.blit(self.current_background, self.offset)
+        image = self.current_background.copy()
+        image = pygame.transform.scale(image, self.base.resolution.get_scale(self.backs_res[self.tag]))
+        surface.blit(image, self.offset)
 

@@ -8,7 +8,7 @@ globals()["ID"] = 0
 class GameObject(pygame.sprite.Sprite):
     def __init__(self, x, y, image, speed=(0, 0)):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image).convert_alpha()
+        self.image = image
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

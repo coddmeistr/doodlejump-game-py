@@ -11,7 +11,10 @@ class PlatformManager:
         self.jumper = None
 
     def first_platforms_layer(self):
-        if self.jumper().jump_time * c.framerate * self.jumper().offsetX >= c.win_width / 2:
+        wnd_w = self.base.resolution.wnd_w
+        wnd_h = self.base.resolution.wnd_h
+
+        if self.jumper().jump_time * c.framerate * self.jumper().offsetX >= wnd_w / 2:
             max_platform_distance = self.jumper().JUMP_HEIGHT + 0
         else:
             max_platform_distance = self.jumper().JUMP_HEIGHT + 0
@@ -19,15 +22,15 @@ class PlatformManager:
         heights = list()
         for _ in range(random.randint(13, 30)):
             heights.append(random.randint(min(200, max_platform_distance - 1), max_platform_distance))
-        heights.append(random.randint(c.win_height, c.win_height + 100))
+        heights.append(random.randint(wnd_h, wnd_h + 100))
         maximum_height = max(heights)
 
         platforms = []
         heights.sort()
         for h in heights:
             p = self.random_platform(0, 0, [100, 0, 0, 0])
-            x = random.randint(0, c.win_width - p.width)
-            y = c.win_height - h
+            x = random.randint(0, wnd_w - p.width)
+            y = wnd_h - h
             p.move(x, y)
 
             platforms.append(p)
@@ -37,22 +40,25 @@ class PlatformManager:
         return platforms
 
     def another_platforms(self):
-        if self.jumper().jump_time * c.framerate * self.jumper().offsetX >= c.win_width / 2:
+        wnd_w = self.base.resolution.wnd_w
+        wnd_h = self.base.resolution.wnd_h
+
+        if self.jumper().jump_time * c.framerate * self.jumper().offsetX >= wnd_w / 2:
             max_platform_distance = self.jumper().JUMP_HEIGHT + 0
         else:
             max_platform_distance = self.jumper().JUMP_HEIGHT + 0
 
         heights = list()
         for _ in range(random.randint(5, 15)):
-            heights.append(random.randint(c.win_height, c.win_height + max_platform_distance))
+            heights.append(random.randint(wnd_h, wnd_h + max_platform_distance))
         maximum_height = max(heights)
 
         platforms = []
         heights.sort()
         for h in heights:
-            x = random.randint(0, c.win_width)
-            y = c.win_height - h
-            p = self.random_platform(x, y, [0, 0, 100, 0, 0])
+            x = random.randint(0, wnd_w)
+            y = wnd_h - h
+            p = self.random_platform(x, y, [80, 5, 5, 5, 5])
 
             platforms.append(p)
 
@@ -61,26 +67,32 @@ class PlatformManager:
         return platforms
 
     def create_saving_platform(self):
+        wnd_w = self.base.resolution.wnd_w
+        wnd_h = self.base.resolution.wnd_h
+
         p = self.random_platform(0, 0, [0, 0, 0, 0, 100])
-        x = random.randint(0, c.win_width - p.width)
-        y = c.win_height - random.randint(0, self.jumped_platform_height) - self.jumper().JUMP_HEIGHT
+        x = random.randint(0, wnd_w - p.width)
+        y = wnd_h - random.randint(0, self.jumped_platform_height) - self.jumper().JUMP_HEIGHT
         p.move(x, y)
         return p
 
     def create_plato(self):
+        wnd_w = self.base.resolution.wnd_w
+        wnd_h = self.base.resolution.wnd_h
+
         platforms = []
         p = self.random_platform(0, 0, [100, 0, 0, 0, 0])
         x = 0
-        y = c.win_height - p.height
+        y = wnd_h - p.height
         p.move(x, y)
         width = p.width
 
         platforms.append(p)
 
-        for i in range(1, (c.win_width // width) + 1):
+        for i in range(1, (wnd_w // width) + 1):
             p = self.random_platform(0, 0, [100, 0, 0, 0])
             x = i * p.width
-            y = c.win_height - p.height
+            y = wnd_h - p.height
             p.move(x, y)
 
             platforms.append(p)

@@ -6,7 +6,9 @@ from animation_base import *
 
 class Platform(GameObject):
     def __init__(self, x, y, base):
-        GameObject.__init__(self, x, y, "textures/platform_basic.png")
+        image = pygame.image.load("textures/platform_basic.png").convert_alpha()
+        image = pygame.transform.scale(image, base.resolution.get_scale(c.s_normal_plat))
+        GameObject.__init__(self, x, y, image)
         self.base = base
 
     def action(self):
@@ -21,7 +23,9 @@ class Platform(GameObject):
 
 class MovingPlatform(GameObject):
     def __init__(self, x, y, speed, base):
-        GameObject.__init__(self, x, y, "textures/platform_runic.png")
+        image = pygame.image.load("textures/platform_runic.png").convert_alpha()
+        image = pygame.transform.scale(image, base.resolution.get_scale(c.s_runic_plat))
+        GameObject.__init__(self, x, y, image)
         self.base = base
 
         self.time = 0
@@ -72,7 +76,9 @@ class MovingPlatform(GameObject):
 
 class FakePlatform(GameObject):
     def __init__(self, x, y, base):
-        GameObject.__init__(self, x, y, "textures/platform_fake.png")
+        image = pygame.image.load("textures/platform_fake.png").convert_alpha()
+        image = pygame.transform.scale(image, base.resolution.get_scale(c.s_fake_plat))
+        GameObject.__init__(self, x, y, image)
         self.base = base
 
         self.animation = base.anims.create_animation("dust_fall", weakref.ref(self), frame_rate=10,
@@ -93,7 +99,9 @@ class FakePlatform(GameObject):
 
 class AbsorbPlatform(GameObject):
     def __init__(self, x, y, base):
-        GameObject.__init__(self, x, y, "textures/platform_fake.png")
+        image = pygame.image.load("textures/platform_fake.png").convert_alpha()
+        image = pygame.transform.scale(image, base.resolution.get_scale(c.s_fake_plat))
+        GameObject.__init__(self, x, y, image)
         self.base = base
 
         # scenario stage of this platform action
@@ -201,7 +209,9 @@ class AbsorbPlatform(GameObject):
 
 class SteinsPlatform(GameObject):
     def __init__(self, x, y, base):
-        GameObject.__init__(self, x, y, "textures/platform_runic.png")
+        image = pygame.image.load("textures/platform_runic.png").convert_alpha()
+        image = pygame.transform.scale(image, base.resolution.get_scale(c.s_runic_plat))
+        GameObject.__init__(self, x, y, image)
 
         self.scenario = 0
 

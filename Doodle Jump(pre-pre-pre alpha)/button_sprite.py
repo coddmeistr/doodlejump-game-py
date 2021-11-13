@@ -8,15 +8,14 @@ from text_object import TextObject
 
 class ButtonSprite(GameObject):
     def __init__(self, x, y, text, normal, hover, pressed, padding_x=0, padding_y=0):
-        GameObject.__init__(self, x, y, normal)
+        self.states_textures = {"normal": normal,
+                                "hover": hover,
+                                "pressed": pressed}
+        GameObject.__init__(self, x, y, self.states_textures["normal"])
 
         self.state = 'normal'
         self.clicked = False
         self.disabled = False
-
-        self.states_textures = {"normal": pygame.image.load(normal),
-                                "hover": pygame.image.load(hover),
-                                "pressed": pygame.image.load(pressed)}
 
         self.text = TextObject(x + padding_x, y + padding_y, lambda: text, c.button_text_color,
                                c.font_name, c.font_size)

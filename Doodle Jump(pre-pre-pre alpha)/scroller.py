@@ -5,15 +5,17 @@ from rectangle_object import RectObject
 from button_sprite import ButtonSprite
 
 
-def create_scroller(self, x, y, param, handler, bounds, w=200, h=100, rect_color=colors.GRAY40, blocked=()):
-    scroller = Scroller(x, y, w, h, param, handler, bounds, rect_color, blocked_elems=blocked)
+def create_scroller(self, x, y, param, handler, bounds, base, w=200, h=100, rect_color=colors.GRAY40, blocked=()):
+    scroller = Scroller(x, y, w, h, param, handler, bounds, rect_color, blocked, base)
     self.mouse_handlers.append(scroller.slider.handle_mouse_event)
     self.mouse_handlers.append(scroller.rect_back.handle_mouse_event)
     self.objects.append(scroller)
 
 
 class Scroller:
-    def __init__(self, x, y, w, h, param, handler, bounds, rect_color, blocked_elems):
+    def __init__(self, x, y, w, h, param, handler, bounds, rect_color, blocked_elems, base):
+        self.base = base
+
         if bounds[0] > bounds[1]:
             raise Exception("Scroller's invalid bounds")
 
@@ -24,7 +26,7 @@ class Scroller:
 
         curr_x = (param / bounds[1])*self.rect_line.width
         x_s, y_s = x_l+curr_x, y_l - h_l/2 - 3  # Change x here. Also -3 just fixing texture(don't know why it not good)
-        self.slider = Slider(x_s, y_s)
+        self.slider = Slider(x_s, y_s, self.base)
         self.slider.rect.x -= self.slider.width/2
 
         self.param = param
@@ -62,9 +64,15 @@ class Scroller:
 
 
 class Slider(ButtonSprite):
-    def __init__(self, x, y):
-        ButtonSprite.__init__(self, x, y, "", "textures/polzunok.png", "textures/polzunok.png",
-                              "textures/polzunok.png")
+    def __init__(self, x, y, base):
+        image_normal = pygame.image.load("textures/polzunok.png")
+        image_hover = pygame.image.load("textures/polzunok.png")
+        image_pressed = pygame.image.load("textures/polzunok.png")
+        image_normal = pygame.transform.scale(image_normal, base.resolution.get_scale(c.s_slider_slider))
+        image_hover = pygame.transform.scale(image_hover, base.resolution.get_scale(c.s_slider_slider))
+        image_pressed = pygame.transform.scale(image_pressed, base.resolution.get_scale(c.s_slider_slider))
+        ButtonSprite.__init__(self, x, y, "", image_normal, image_hover,
+                              image_pressed)
 
         self.cursor_pos = 0
 

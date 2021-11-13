@@ -18,7 +18,8 @@ def delete_objects(self):
     self.platforms = []
     self.buttons = []
     # delete all jumper handlers and jumper
-    delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
+    if self.jumper is not None:
+        delete_jumper(self.keyup_handlers, self.keydown_handlers, self.jumper, self.errors_log)
     self.jumper = None
     # delete all statistic trackers
     delete_trackers([self.points_text, self.max_height_text, self.jumped_platforms_count_text], self.errors_log)

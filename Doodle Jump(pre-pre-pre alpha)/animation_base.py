@@ -7,10 +7,16 @@ from animation import Animation
 
 
 class AnimationBase:
-    def __init__(self):
+    def __init__(self, base):
+        self.base = base
+
         self.animations = {"dust_fall": self.load_animation("animations/dust_fall"),
                            "rotating_gear": self.load_animation("animations/rotating_gear")
                       }
+
+        self.animation_sizes = {"dust_fall": c.s_dust_fall_anim,
+                           "rotating_gear": c.s_rotating_gear_anim
+                           }
 
         self.on_draw_animations = []
 
@@ -26,6 +32,7 @@ class AnimationBase:
         animation = dict()
         animation["frames"] = self.animations[tag]
         animation["frames_count"] = len(self.animations[tag])
+        animation["size"] = self.animation_sizes[tag]
         animation["attach"] = attach_obj
         animation["t_skip"] = int(1/(frame_rate / c.framerate))
         animation["offset"] = offset
@@ -35,7 +42,7 @@ class AnimationBase:
             animation["r_count"] = repeat_count
         else:
             raise Exception
-        new_anim = Animation(animation)
+        new_anim = Animation(animation, self.base)
         self.on_draw_animations.append(new_anim)
         return weakref.ref(new_anim)
 

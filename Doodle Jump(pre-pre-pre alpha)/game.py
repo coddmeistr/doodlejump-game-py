@@ -5,6 +5,7 @@ import multicoloring
 from collections import defaultdict
 from platform_manager import *
 from movie import *
+from resolution import Resolution
 from pygame import cursors
 
 
@@ -26,7 +27,7 @@ class Game:
         pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.init()
         pygame.font.init()
-        self.background = Background(back_image_filename)
+        self.background = Background(back_image_filename, self)
         self.pm = PlatformManager(self)
         self.font = pygame.font.Font(c.font_name, c.font_size)
         self.surface = pygame.display.set_mode((width, height))
@@ -47,8 +48,9 @@ class Game:
         self.sounds = Sounds()
         self.load_settings()
 
-        self.movie = Movie(self.music)
-        self.anims = AnimationBase()
+        self.movie = Movie(self.music, self)
+        self.anims = AnimationBase(self)
+        self.resolution = Resolution(c.start_win_width, c.start_win_height)
 
         pygame.mouse.set_visible(False)
         self.cursor_texture = pygame.image.load("textures/cursor/cursor.png")

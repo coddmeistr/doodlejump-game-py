@@ -1,7 +1,7 @@
 import pygame.mixer_music
 
+import config
 import jumper
-
 from game_object import *
 from centralizer import *
 from delete import *
@@ -15,9 +15,9 @@ from scroller import *
 
 class Doodle(Game):
     def __init__(self):
-        Game.__init__(self, 'Doodle Jump', c.win_width, c.win_height, "images/background.jpg", c.framerate)
+        Game.__init__(self, 'Doodle Jump', c.start_win_width, c.start_win_height, "images/background.jpg", c.framerate)
 
-        self.jumper = Jumper()
+        self.jumper = None
 
         # Background moving
         self.height_passed = 0
@@ -39,48 +39,53 @@ class Doodle(Game):
         self.create_menu()
 
     def create_menu(self):
+        wnd_w = self.resolution.wnd_w
+        wnd_h = self.resolution.wnd_h
+
         main_menu_buttons = list()
 
+        image_normal = pygame.image.load("textures/buttons/button_play/clickable.png")
+        image_hover = pygame.image.load("textures/buttons/button_play/clickable.png")
+        image_pressed = pygame.image.load("textures/buttons/button_play/clickable.png")
+        image_normal = pygame.transform.scale(image_normal, self.resolution.get_scale(c.s_menu_button_play))
+        image_hover = pygame.transform.scale(image_hover, self.resolution.get_scale(c.s_menu_button_play))
+        image_pressed = pygame.transform.scale(image_pressed, self.resolution.get_scale(c.s_menu_button_play))
         text, w, h, px, py = get_centralized_params(self.font, "ИГРАТЬ", 7, 7)
-        main_menu_buttons.append(ButtonSprite(c.win_width / 2 - w / 2, 150, text,
-            "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png", "textures/buttons/button_play/clickable.png"))
-        main_menu_buttons[0].add_anim(self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(50, 10)))
-        main_menu_buttons[0].add_anim(
-            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(100, 10), frame_rate=60))
-        main_menu_buttons[0].add_anim(
-            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(50, 100), frame_rate= 30))
-        main_menu_buttons[0].add_anim(
-            self.anims.create_animation("rotating_gear", weakref.ref(main_menu_buttons[0]), offset=(200, 200), frame_rate=5))
-
+        main_menu_buttons.append(ButtonSprite(wnd_w / 2 - w / 2, 150, text,
+                                              image_normal, image_hover, image_pressed))
 
         text, w, h, px, py = get_centralized_params(self.font, "НАСТРОЙКИ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 250, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 250, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "ВЫХОД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 350, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 350, w, h, text, padding_x=px, padding_y=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
             self.buttons.append(button)
 
     def create_menu_settings(self):
+        wnd_w = self.resolution.wnd_w
+        wnd_h = self.resolution.wnd_h
+
         main_menu_buttons = list()
 
         text, w, h, px, py = get_centralized_params(self.font, "ЗВУКИ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 100, w, h, text, padding_x=px, padding_y=py))
-        print(w, h)
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 100, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "МУЗЫКА", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 200, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 200, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "СЛОЖНОСТЬ", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 300, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 300, w, h, text, padding_x=px, padding_y=py))
         text, w, h, px, py = get_centralized_params(self.font, "НАЗАД", 7, 7)
-        main_menu_buttons.append(Button(c.win_width / 2 - w / 2, 400, w, h, text, padding_x=px, padding_y=py))
+        main_menu_buttons.append(Button(wnd_w / 2 - w / 2, 400, w, h, text, padding_x=px, padding_y=py))
         for button in main_menu_buttons:
             self.mouse_handlers.append(button.handle_mouse_event)
             self.objects.append(button)
             self.buttons.append(button)
 
     def create_jumper(self, x, y):
-        jumper_obj = Jumper(x, y, c.jumper_speedX)
+        image = pygame.image.load("textures/jumper_front.png").convert_alpha()
+        image = pygame.transform.scale(image, self.resolution.get_scale(c.s_jumper))
+        jumper_obj = Jumper(x, y, image, self, c.jumper_speedX)
         self.keydown_handlers[pygame.K_LEFT].append(jumper_obj.handle)
         self.keydown_handlers[pygame.K_RIGHT].append(jumper_obj.handle)
         self.keyup_handlers[pygame.K_LEFT].append(jumper_obj.handle)
@@ -99,8 +104,12 @@ class Doodle(Game):
         self.objects.append(self.jumped_platforms_count_text)
 
     def game_lost(self):
+        wnd_w = self.resolution.wnd_w
+        wnd_h = self.resolution.wnd_h
         # create basic GameObject to display "GAME LOST!"
-        game_lost_text = GameObject(c.win_width / 2 - 75, c.win_height / 2 - 150, "textures/you_lost.png")
+        image = pygame.image.load("textures/you_lost.png").convert_alpha()
+        image = pygame.transform.scale(image, self.resolution.get_scale(c.s_game_lost_banner))
+        game_lost_text = GameObject(wnd_w / 2 - 75, wnd_h / 2 - 150, image)
 
         # save params
         height = self.max_height_text.param + 0
@@ -117,14 +126,14 @@ class Doodle(Game):
         # create new statistic
         temp_font = pygame.font.Font(c.font_name, 30)
         text1 = "height: " + str(int(height))
-        self.max_height_text = TextObject(c.win_width / 2 - temp_font.size(text1)[0] / 2, c.win_height / 2 - 15,
+        self.max_height_text = TextObject(wnd_w / 2 - temp_font.size(text1)[0] / 2, wnd_h / 2 - 15,
                                           lambda: text1, colors.ORANGE, c.font_name, 30)
         text2 = "points: " + str(int(points))
-        self.points_text = TextObject(c.win_width / 2 - temp_font.size(text2)[0] / 2, c.win_height / 2 + 20,
+        self.points_text = TextObject(wnd_w / 2 - temp_font.size(text2)[0] / 2, wnd_h / 2 + 20,
                                       lambda: text2, colors.ORANGE, c.font_name, 30)
         text3 = "jumps: " + str(int(platforms))
-        self.jumped_platforms_count_text = TextObject(c.win_width / 2 - temp_font.size(text3)[0] / 2,
-                                                      c.win_height / 2 + 55,
+        self.jumped_platforms_count_text = TextObject(wnd_w / 2 - temp_font.size(text3)[0] / 2,
+                                                      wnd_h / 2 + 55,
                                                       lambda: text3, colors.ORANGE, c.font_name, 30)
         # add to multi coloring
         self.multicolor.add_object(weakref.ref(self.max_height_text), left_color=(0, 0, 255), right_color=(255, 0, 0))
@@ -157,7 +166,7 @@ class Doodle(Game):
                 if not isinstance(o, jumper.Jumper):
                     o.move(0, change)
                     self.pm.last_platform_height -= change
-            return change+0  # returns height change (high)
+            return change + 0  # returns height change (high)
         return 0
 
     def update_points(self, height_delta, is_jumped):
@@ -214,7 +223,7 @@ class Doodle(Game):
             if self.game_state == "Play":
                 try:
                     # No exception if object is movable
-                    if o.top > c.win_height + 10 and not isinstance(o, jumper.Jumper):
+                    if o.top > self.resolution.wnd_h + 10 and not isinstance(o, jumper.Jumper):
                         # it will be deleted at the end of a tick
                         self.objects_to_remove.append(o)
                         # The list of objects collections that you want to delete here (START)
@@ -238,7 +247,7 @@ class Doodle(Game):
             # hide cursor
             self.hide_cursor()
             # Create jumper. Add jumped to Platform Manager and create statistic trackers
-            self.create_jumper(c.win_width / 2, c.win_height / 2 - 15)
+            self.create_jumper(self.resolution.wnd_w / 2, self.resolution.wnd_h / 2 - 70)
             self.pm.jumper = weakref.ref(self.jumper)  # add jumper to pm
             self.create_stats_trackers()
             # Create plato and the first layer of platforms
@@ -334,6 +343,7 @@ class Doodle(Game):
             create_scroller(self, self.buttons[0].right + 50, self.buttons[0].top - 25,
                             self.sounds.volume, self.sounds.change_volume,
                             [0, 1],
+                            self,
                             w=w, h=h,
                             blocked=blocked)
 
@@ -349,6 +359,7 @@ class Doodle(Game):
             create_scroller(self, self.buttons[1].right + 50, self.buttons[1].top - 25,
                             self.music.volume, self.music.change_volume,
                             [0, 1],
+                            self,
                             w=w, h=h,
                             blocked=blocked)
 
